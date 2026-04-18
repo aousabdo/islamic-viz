@@ -1,0 +1,33 @@
+// tailwind.config.ts
+import type { Config } from 'tailwindcss';
+
+export default {
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        bg: 'var(--bg)',
+        surface: 'var(--surface)',
+        ink: 'var(--ink)',
+        'ink-dim': 'var(--ink-dim)',
+        accent: 'var(--accent)',
+        'accent-d': 'var(--accent-d)',
+        'gold-d': 'var(--gold-d)',
+        rule: 'var(--rule)',
+        'chart-2': 'var(--chart-2)',
+        'chart-3': 'var(--chart-3)',
+      },
+      fontFamily: {
+        'en-body': ['Inter', 'system-ui', 'sans-serif'],
+        'en-display': ['"Instrument Serif"', 'Georgia', 'serif'],
+        'ar-body': ['Amiri', 'serif'],
+        'ar-display': ['"Scheherazade New"', 'Amiri', 'serif'],
+      },
+      borderRadius: { lg: '8px', '2xl': '14px' },
+      transitionTimingFunction: {
+        'ease-out-soft': 'cubic-bezier(0.22, 0.61, 0.36, 1)',
+      },
+    },
+  },
+  plugins: [],
+} satisfies Config;

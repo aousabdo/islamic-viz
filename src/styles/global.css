@@ -1,0 +1,27 @@
+/* src/styles/global.css */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/instrument-serif/400.css';
+@import '@fontsource/amiri/400.css';
+@import '@fontsource/amiri/700.css';
+@import '@fontsource/scheherazade-new/400.css';
+@import '@fontsource/scheherazade-new/700.css';
+
+@import './tokens.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { background: var(--bg); color: var(--ink); }
+html[lang='en'] body { font-family: 'Inter', system-ui, sans-serif; line-height: 1.65; }
+html[lang='ar'] body { font-family: 'Amiri', serif; line-height: 1.85; }
+
+html[lang='en'] h1, html[lang='en'] h2 { font-family: 'Instrument Serif', Georgia, serif; }
+html[lang='ar'] h1, html[lang='ar'] h2 { font-family: 'Scheherazade New', Amiri, serif; }
+
+html[dir='rtl'] body { text-align: right; }
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-d); text-decoration: underline; }

@@ -1,0 +1,13 @@
+/* src/styles/tokens.css */
+:root {
+  --bg: #FAF7F0;
+  --surface: #FFFFFF;
+  --ink: #0F172A;
+  --ink-dim: #475569;
+  --accent: #0F766E;
+  --accent-d: #134E4A;
+  --gold-d: #7C5F1E;
+  --rule: #E6DFC8;
+  --chart-2: #C2410C;
+  --chart-3: #6B21A8;
+}
