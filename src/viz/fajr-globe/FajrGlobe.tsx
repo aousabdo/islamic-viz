@@ -1,21 +1,30 @@
+// src/viz/fajr-globe/FajrGlobe.tsx
 import { useMemo, useState } from 'react';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import {
+  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 import { CITIES } from '../../data/cities';
 import { CALC_METHODS, getMethod } from '../../data/calc-methods';
 import { sunriseSunset, fajrTime, hoursToHHMM } from '../../lib/solar';
 import { isDST } from '../../lib/dst';
 import { useLang } from '../../i18n/useLang';
+import { MONTH_TICKS, dayToMonth } from '../../lib/chartUtils';
+import GlowDefs from '../../components/GlowDefs';
+import ChartTooltip from '../../components/ChartTooltip';
 import contentEn from './content.en.json';
 import contentAr from './content.ar.json';
 
 export default function FajrGlobe() {
   const { lang } = useLang();
   const dict = lang === 'ar' ? contentAr : contentEn;
+
   const [cityIdx, setCityIdx] = useState(() => {
     const i = CITIES.findIndex((c) => c.name.startsWith('Makkah'));
     return i >= 0 ? i : 0;
   });
   const [methodId, setMethodId] = useState('umm');
+
   const city = CITIES[cityIdx];
   const method = getMethod(methodId);
 
@@ -34,57 +43,99 @@ export default function FajrGlobe() {
 
   const cityLabel = lang === 'ar' && city.nameAr ? city.nameAr : city.name;
 
+  const fmtHour = (h: number) => {
+    const { hh, mm } = hoursToHHMM(h);
+    return `${hh}:${mm}`;
+  };
+
   return (
     <div>
       <div className="flex flex-wrap gap-3 mb-4 text-sm">
         <label className="flex items-center gap-2">
-          <span className="text-ink-dim">{dict.controls.city}</span>
+          <span style={{ color: 'var(--ink-dim)' }}>{dict.controls.city}</span>
           <select
             value={cityIdx}
             onChange={(e) => setCityIdx(parseInt(e.target.value, 10))}
             className="border border-rule rounded-lg px-2 py-1 bg-surface"
           >
-            {CITIES.map((c, i) => <option key={c.name} value={i}>{c.name}</option>)}
+            {CITIES.map((c, i) => (
+              <option key={c.name} value={i}>{c.name}</option>
+            ))}
           </select>
         </label>
         <label className="flex items-center gap-2">
-          <span className="text-ink-dim">{dict.controls.method}</span>
+          <span style={{ color: 'var(--ink-dim)' }}>{dict.controls.method}</span>
           <select
             value={methodId}
             onChange={(e) => setMethodId(e.target.value)}
             className="border border-rule rounded-lg px-2 py-1 bg-surface"
           >
             {CALC_METHODS.map((m) => (
-              <option key={m.id} value={m.id}>{lang === 'ar' ? m.labelAr : m.labelEn}</option>
+              <option key={m.id} value={m.id}>
+                {lang === 'ar' ? m.labelAr : m.labelEn}
+              </option>
             ))}
           </select>
         </label>
       </div>
 
-      <div className="text-sm text-ink-dim mb-2">{cityLabel}</div>
+      <div className="text-sm mb-2" style={{ color: 'var(--ink-dim)' }}>
+        {cityLabel}
+      </div>
+
+      {/* Hidden SVG defs — must precede ResponsiveContainer in DOM */}
+      <GlowDefs />
 
       <div style={{ width: '100%', height: 420 }}>
         <ResponsiveContainer>
           <AreaChart data={data} margin={{ top: 16, right: 16, left: 0, bottom: 0 }}>
             <CartesianGrid stroke="var(--rule)" strokeDasharray="2 4" />
-            <XAxis dataKey="day" stroke="var(--ink-dim)" />
+
+            <XAxis
+              dataKey="day"
+              ticks={MONTH_TICKS}
+              tickFormatter={dayToMonth}
+              stroke="var(--ink-dim)"
+              tick={{ fill: 'var(--ink-dim)', fontSize: 11 }}
+            />
             <YAxis
               domain={[0, 8]}
-              tickFormatter={(h: number) => {
-                const { hh, mm } = hoursToHHMM(h);
-                return `${hh}:${mm}`;
-              }}
+              tickFormatter={fmtHour}
               stroke="var(--ink-dim)"
+              tick={{ fill: 'var(--ink-dim)', fontSize: 11 }}
             />
+
             <Tooltip
-              formatter={(v) => {
-                const { hh, mm } = hoursToHHMM(Number(v));
-                return `${hh}:${mm}`;
-              }}
-              labelFormatter={(d) => `Day ${d}`}
+              content={
+                <ChartTooltip
+                  labelFormatter={(d) => dayToMonth(Number(d))}
+                  valueFormatter={(v) => fmtHour(Number(v))}
+                />
+              }
             />
-            <Area type="monotone" dataKey="fajr" stroke="var(--accent)" fill="var(--accent)" fillOpacity={0.15} />
-            <Area type="monotone" dataKey="sunrise" stroke="var(--chart-2)" fill="var(--chart-2)" fillOpacity={0.05} />
+
+            <Area
+              type="monotone"
+              dataKey="fajr"
+              name="Fajr"
+              stroke="var(--chart-1)"
+              strokeWidth={2}
+              fill="url(#grad-chart1)"
+              filter="url(#glow)"
+              dot={false}
+              activeDot={{ r: 4, fill: 'var(--chart-1)' }}
+            />
+            <Area
+              type="monotone"
+              dataKey="sunrise"
+              name="Sunrise"
+              stroke="var(--chart-2)"
+              strokeWidth={1.5}
+              fill="url(#grad-chart2)"
+              filter="url(#glow)"
+              dot={false}
+              activeDot={{ r: 4, fill: 'var(--chart-2)' }}
+            />
           </AreaChart>
         </ResponsiveContainer>
       </div>
