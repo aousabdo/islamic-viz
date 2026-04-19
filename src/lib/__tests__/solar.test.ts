@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  dayOfYear, solarDeclination, equationOfTime,
-  solarNoon, hourAngle, sunAltitude, sunriseSunset, fajrTime,
-} from '../solar';
+import { dayOfYear, solarDeclination, sunriseSunset, fajrTime } from '../solar';
 
 describe('dayOfYear', () => {
   it('returns 1 for Jan 1', () => {
