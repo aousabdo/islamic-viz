@@ -117,7 +117,7 @@ export default function QiblaGC() {
           <path
             d={pathGen(land) ?? ''}
             fill="var(--map-land)"
-            stroke="rgba(255,255,255,0.1)"
+            stroke="var(--rule)"
             strokeWidth={0.6}
           />
         )}
