@@ -1,0 +1,15 @@
+{
+  "title": "Fajr Around the World",
+  "subtitle": "How dawn's earliest threshold shifts by latitude and season",
+  "tag": "astronomy",
+  "controls": { "city": "City", "method": "Calculation method" },
+  "explainer": [
+    { "type": "p", "text": "Fajr is defined by a specific solar depression below the horizon — a threshold of the night sky's darkness, not clock time. As the Earth tilts through the year, this threshold lands at wildly different hours across latitudes. The chart above traces Fajr (teal) and sunrise (orange) through all 365 days of the Gregorian year for the city you select." },
+    { "type": "p", "text": "Two patterns dominate. First: the further you are from the equator, the larger the annual swing — Oslo's Fajr varies by more than five hours between June and December, while Singapore's barely moves. Second: the gap between Fajr and sunrise (the window in which Fajr prayer is valid) narrows in summer and widens in winter — a seasonal breathing that's hard to see from a single city's prayer timetable." },
+    { "type": "p", "text": "The calculation method you pick matters. Umm al-Qura uses an 18.5° Fajr angle calibrated for Makkah. ISNA uses 15°, which shifts Fajr noticeably later in the northern hemisphere's winter. The method disclosure below explains what each number means." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Solar declination and equation of time are computed with Spencer's approximation (published in NOAA's reference implementation). Fajr is computed as the solar hour angle at which the sun is at the chosen negative altitude (e.g., -18.5° for Umm al-Qura). DST is applied using per-region rules: US and EU follow their standard transition dates; Iran abolished DST in 2022 and is not adjusted; Jordan and Palestine approximate EU rules." },
+    { "type": "p", "text": "At high latitudes above ~48° in summer, twilight never fully ends and formulaic Fajr may not be defined. The chart clamps to 0–8 hours and uses NaN handling in the solar library — extreme polar cases render as gaps. Published prayer tables from Umm al-Qura and others apply additional ihtiyat (precautionary) minutes and elevation corrections we do not include; expect ~5–10 minute differences from those tables." }
+  ]
+}

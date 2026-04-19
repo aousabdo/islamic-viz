@@ -1,4 +1,5 @@
 import type { ComponentType } from 'react';
+import FajrGlobe from '../viz/fajr-globe/FajrGlobe';
 
 export type VizSlug = 'fajr-globe' | 'fasting-hours' | 'hijri-drift' | 'sun-path-asr' | 'qibla-great-circle';
 
@@ -10,7 +11,7 @@ export type VizConfig = {
 
 // Populated as each viz lands (Tasks 16-20).
 export const VISUALIZATIONS: Record<VizSlug, VizConfig | null> = {
-  'fajr-globe': null,
+  'fajr-globe': { slug: 'fajr-globe', tag: 'astronomy', Chart: FajrGlobe },
   'fasting-hours': null,
   'hijri-drift': null,
   'sun-path-asr': null,
