@@ -1,0 +1,14 @@
+{
+  "title": "The Drifting Hijri Calendar",
+  "subtitle": "Ramadan's walk through the seasons, 1445 AH onward",
+  "tag": "calendar",
+  "explainer": [
+    { "type": "p", "text": "The Hijri lunar year is about 354 days — 11 days shorter than the Gregorian solar year. Each Hijri month therefore drifts backward through the Gregorian calendar at roughly the same rate. Each dot above is one year of Ramadan: horizontal axis is the Gregorian year, vertical axis is the day within that year when Ramadan begins." },
+    { "type": "p", "text": "Read the plot top to bottom to see the retrograde drift: a dot high up means Ramadan falls in summer; a dot low down means winter. Over about 33 Gregorian years, Ramadan completes one full loop through the seasons. The dashed line marks the summer solstice — the most demanding fast in the northern hemisphere." },
+    { "type": "p", "text": "Compare this to the Gregorian calendar, which is fixed to the sun. The Hijri calendar is fixed to the moon. The offset is deliberate — the lunar month is short enough that any month of the year falls in every season over a lifetime, which was the intent." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Ramadan start dates are computed via the Umm al-Qura astronomical calendar via the browser's Intl.DateTimeFormat with calendar 'islamic-umalqura'. The Umm al-Qura calendar is the official calendar of Saudi Arabia and is supported in V8 and modern JavaScript engines for Hijri years roughly 1300–1500 (covers ~1882–2077 CE). Actual observed crescent sightings may differ by a day in either direction — the Umm al-Qura calendar is an astronomical predictor, not a substitute for local moonsighting." }
+  ],
+  "axes": { "x": "Gregorian year", "y": "Day of year" }
+}
