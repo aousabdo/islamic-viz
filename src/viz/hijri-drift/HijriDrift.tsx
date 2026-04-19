@@ -1,12 +1,47 @@
+// src/viz/hijri-drift/HijriDrift.tsx
 import { useMemo } from 'react';
-import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
+import {
+  ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip,
+  ReferenceArea, ResponsiveContainer,
+} from 'recharts';
 import { ramadanStart } from '../../lib/hijri';
 import { useLang } from '../../i18n/useLang';
+import GlowDefs from '../../components/GlowDefs';
+import ChartTooltip from '../../components/ChartTooltip';
 import contentEn from './content.en.json';
 import contentAr from './content.ar.json';
 
 const START_H_YEAR = 1445;
-const END_H_YEAR = 1478; // ~2054 Gregorian — full retrograde cycle plus change
+const END_H_YEAR = 1478;
+
+// Season bands on Y axis (dayOfYear domain 0–366, reversed so Jan is at top)
+const Y_BANDS = [
+  { y1: 1,   y2: 79,  fill: 'rgba(30,60,100,0.08)' },
+  { y1: 80,  y2: 171, fill: 'rgba(30,100,60,0.08)' },
+  { y1: 172, y2: 265, fill: 'rgba(100,60,10,0.08)' },
+  { y1: 266, y2: 366, fill: 'rgba(60,30,80,0.08)' },
+] as const;
+
+type DotProps = {
+  cx?: number;
+  cy?: number;
+  payload?: { dayOfYear: number };
+};
+
+/** Custom scatter dot — teal for Jan–Jun Ramadan start, gold for Jul–Dec */
+function GlowDot({ cx = 0, cy = 0, payload }: DotProps) {
+  const isFirstHalf = (payload?.dayOfYear ?? 0) <= 182;
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={4}
+      fill={isFirstHalf ? 'var(--chart-1)' : 'var(--chart-2)'}
+      fillOpacity={0.85}
+      filter="url(#dot-glow)"
+    />
+  );
+}
 
 export default function HijriDrift() {
   const { lang } = useLang();
@@ -21,31 +56,85 @@ export default function HijriDrift() {
         const start = Date.UTC(gYear, 0, 0);
         const day = Math.floor((d.getTime() - start) / 86400000);
         pts.push({ gYear, dayOfYear: day, hYear: h });
-      } catch { /* ignore */ }
+      } catch {
+        /* ignore */
+      }
     }
     return pts;
   }, []);
 
   const seasonTicks = [1, 80, 172, 266, 355];
-  const seasonLabels = lang === 'ar'
-    ? ['يناير', 'الربيع', 'الصيف', 'الخريف', 'الشتاء']
-    : ['Jan 1', 'Spring', 'Summer', 'Autumn', 'Winter'];
+  const seasonLabels =
+    lang === 'ar'
+      ? ['يناير', 'الربيع', 'الصيف', 'الخريف', 'الشتاء']
+      : ['Jan 1', 'Spring', 'Summer', 'Autumn', 'Winter'];
 
   return (
     <div>
-      <div className="text-sm text-ink-dim mb-3">{dict.subtitle}</div>
+      <div className="text-sm mb-3" style={{ color: 'var(--ink-dim)' }}>
+        {dict.subtitle}
+      </div>
+
+      <GlowDefs />
+
       <div style={{ width: '100%', height: 420 }}>
         <ResponsiveContainer>
           <ScatterChart margin={{ top: 16, right: 24, bottom: 32, left: 24 }}>
+            {/* Season bands on Y axis */}
+            {Y_BANDS.map((b, i) => (
+              <ReferenceArea
+                key={i}
+                y1={b.y1}
+                y2={b.y2}
+                fill={b.fill}
+                stroke="none"
+                ifOverflow="hidden"
+              />
+            ))}
+
             <CartesianGrid stroke="var(--rule)" strokeDasharray="2 4" />
-            <XAxis type="number" dataKey="gYear" domain={['auto', 'auto']} stroke="var(--ink-dim)" label={{ value: dict.axes.x, position: 'insideBottom', offset: -8, fill: 'var(--ink-dim)' }} />
-            <YAxis type="number" dataKey="dayOfYear" domain={[0, 366]} ticks={seasonTicks} tickFormatter={(t: number) => seasonLabels[seasonTicks.indexOf(t)] ?? ''} stroke="var(--ink-dim)" reversed />
-            <Tooltip
-              formatter={(v, name) => name === 'dayOfYear' ? `Day ${v}` : String(v)}
-              labelFormatter={(l) => `Gregorian ${l}`}
+
+            <XAxis
+              type="number"
+              dataKey="gYear"
+              domain={['auto', 'auto']}
+              stroke="var(--ink-dim)"
+              tick={{ fill: 'var(--ink-dim)', fontSize: 11 }}
+              label={{
+                value: dict.axes.x,
+                position: 'insideBottom',
+                offset: -8,
+                fill: 'var(--ink-dim)',
+              }}
             />
-            <ReferenceLine y={172} stroke="var(--chart-2)" strokeDasharray="3 3" />
-            <Scatter data={data} fill="var(--accent)" />
+            <YAxis
+              type="number"
+              dataKey="dayOfYear"
+              domain={[0, 366]}
+              ticks={seasonTicks}
+              tickFormatter={(t: number) =>
+                seasonLabels[seasonTicks.indexOf(t)] ?? ''
+              }
+              stroke="var(--ink-dim)"
+              tick={{ fill: 'var(--ink-dim)', fontSize: 11 }}
+              reversed
+            />
+
+            <Tooltip
+              content={
+                <ChartTooltip
+                  labelFormatter={(l) => `${l}`}
+                  valueFormatter={(v, name) =>
+                    name === 'dayOfYear' ? `Day ${Math.round(v)}` : String(v)
+                  }
+                />
+              }
+            />
+
+            <Scatter
+              data={data}
+              shape={(props: DotProps) => <GlowDot {...props} />}
+            />
           </ScatterChart>
         </ResponsiveContainer>
       </div>
