@@ -17,10 +17,10 @@ import contentAr from './content.ar.json';
 // Subtle season background fills — same values in both themes; low-opacity so
 // they don't fight the dark/light background.
 const SEASON_BANDS = [
-  { y1: 1,   y2: 79,  fill: 'rgba(30,60,100,0.08)',  label: 'Winter' },
-  { y1: 80,  y2: 171, fill: 'rgba(30,100,60,0.08)',  label: 'Spring' },
-  { y1: 172, y2: 265, fill: 'rgba(100,60,10,0.08)',  label: 'Summer' },
-  { y1: 266, y2: 355, fill: 'rgba(60,30,80,0.08)',   label: 'Autumn' },
+  { x1: 1,   x2: 79,  fill: 'rgba(30,60,100,0.08)',  label: 'Winter' },
+  { x1: 80,  x2: 171, fill: 'rgba(30,100,60,0.08)',  label: 'Spring' },
+  { x1: 172, x2: 265, fill: 'rgba(100,60,10,0.08)',  label: 'Summer' },
+  { x1: 266, x2: 365, fill: 'rgba(60,30,80,0.08)',   label: 'Autumn' },
 ] as const;
 
 // Fasting hours = maghrib (sunset) minus fajr.
@@ -76,8 +76,8 @@ export default function FastingHours() {
             {SEASON_BANDS.map((s) => (
               <ReferenceArea
                 key={s.label}
-                x1={s.y1}
-                x2={s.y2}
+                x1={s.x1}
+                x2={s.x2}
                 fill={s.fill}
                 stroke="none"
                 ifOverflow="hidden"
