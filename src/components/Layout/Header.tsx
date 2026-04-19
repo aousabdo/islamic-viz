@@ -1,23 +1,45 @@
+// src/components/Layout/Header.tsx
 import { Link } from 'react-router-dom';
 import { useLang } from '../../i18n/useLang';
-import Container from './Container';
 import LangToggle from './LangToggle';
+import ThemeToggle from '../ThemeToggle';
 
 export default function Header() {
   const { lang, t } = useLang();
   return (
-    <header className="border-b border-rule bg-surface/60 backdrop-blur">
-      <Container className="py-4 flex items-center justify-between">
-        <Link to={`/${lang}/`} className="text-xl text-ink no-underline">
+    <header
+      className="sticky top-0 z-50 border-b backdrop-blur-xl"
+      style={{
+        borderColor: 'var(--border)',
+        background: 'var(--header-bg)',
+      }}
+    >
+      <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
+        <Link
+          to={`/${lang}/`}
+          className="no-underline"
+          style={{
+            fontFamily: '"Instrument Serif", Georgia, serif',
+            color: 'var(--gold)',
+            fontSize: '1.05rem',
+            letterSpacing: '.04em',
+          }}
+        >
           {t('site.title')}
         </Link>
-        <nav className="flex items-center gap-6">
-          <Link to={`/${lang}/about`} className="text-sm text-ink-dim hover:text-accent">
+
+        <nav className="flex items-center gap-4">
+          <Link
+            to={`/${lang}/about`}
+            className="no-underline transition-opacity hover:opacity-100"
+            style={{ color: 'var(--ink-dim)', fontSize: '.78rem', opacity: 0.75 }}
+          >
             {t('nav.about')}
           </Link>
           <LangToggle />
+          <ThemeToggle />
         </nav>
-      </Container>
+      </div>
     </header>
   );
 }
