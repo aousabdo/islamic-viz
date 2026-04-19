@@ -1,13 +1,78 @@
-/* src/styles/tokens.css */
+/* src/styles/tokens.css — dark default, light override via [data-theme="light"] */
 :root {
-  --bg: #FAF7F0;
-  --surface: #FFFFFF;
-  --ink: #0F172A;
-  --ink-dim: #475569;
-  --accent: #0F766E;
-  --accent-d: #134E4A;
-  --gold-d: #7C5F1E;
-  --rule: #E6DFC8;
-  --chart-2: #C2410C;
-  --chart-3: #6B21A8;
+  /* backgrounds */
+  --bg:          #070b14;
+  --surface:     rgba(255,255,255,0.04);
+  --surface-h:   rgba(255,255,255,0.07);
+
+  /* borders */
+  --border:      rgba(255,255,255,0.08);
+  --border-h:    rgba(77,222,204,0.35);
+
+  /* text */
+  --ink:         #f0e8d6;
+  --ink-dim:     rgba(240,232,214,0.45);
+
+  /* brand */
+  --accent:      #4adecc;
+  --accent-d:    #0F766E;
+  --gold:        #d4b483;
+  --gold-d:      #a88a52;
+
+  /* dividers */
+  --rule:        rgba(255,255,255,0.06);
+
+  /* chart palette */
+  --chart-1:     #4adecc;
+  --chart-2:     #d4b483;
+  --chart-3:     #f97316;
+
+  /* shadows / glows */
+  --glow-teal:   0 0 24px rgba(77,222,204,0.15);
+  --glow-gold:   0 0 20px rgba(212,180,131,0.12);
+
+  /* glass header */
+  --header-bg:   rgba(7,11,20,0.75);
+
+  /* SunPathAsr sky gradient stops */
+  --sky-top:     #04080f;
+  --sky-bottom:  #0a1628;
+
+  /* QiblaGC map fills */
+  --map-land:      rgba(255,255,255,0.06);
+  --map-graticule: rgba(255,255,255,0.04);
+}
+
+[data-theme="light"] {
+  --bg:          #FAF7F0;
+  --surface:     rgba(0,0,0,0.03);
+  --surface-h:   rgba(15,118,110,0.06);
+
+  --border:      rgba(0,0,0,0.09);
+  --border-h:    rgba(15,118,110,0.40);
+
+  --ink:         #0F172A;
+  --ink-dim:     #64748b;
+
+  --accent:      #0F766E;
+  --accent-d:    #134E4A;
+  --gold:        #7C5F1E;
+  --gold-d:      #5C4415;
+
+  --rule:        #E6DFC8;
+
+  --chart-1:     #0F766E;
+  --chart-2:     #7C5F1E;
+  --chart-3:     #c2410c;
+
+  --glow-teal:   0 2px 16px rgba(15,118,110,0.10);
+  --glow-gold:   0 2px 12px rgba(124,95,30,0.08);
+
+  --header-bg:   rgba(250,247,240,0.82);
+
+  --sky-top:     #dbeafe;
+  --sky-bottom:  #bfdbfe;
+
+  --map-land:      rgba(15,118,110,0.07);
+  --map-graticule: rgba(15,118,110,0.05);
 }

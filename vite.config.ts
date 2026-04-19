@@ -12,7 +12,7 @@ export default defineConfig({
   },
   build: { outDir: 'dist', sourcemap: false },
   test: {
-    environment: 'jsdom',
+    environment: 'happy-dom',
     globals: true,
     setupFiles: './src/test/setup.ts',
   },

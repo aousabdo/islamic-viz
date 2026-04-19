@@ -25,3 +25,17 @@ html[dir='rtl'] body { text-align: right; }
 
 a { color: var(--accent); text-decoration: none; }
 a:hover { color: var(--accent-d); text-decoration: underline; }
+
+/* Force dark-theme colors on native form controls */
+select,
+input[type='date'],
+input[type='text'],
+input[type='number'] {
+  color: var(--ink);
+  background: var(--surface);
+}
+
+select option {
+  background: var(--bg);
+  color: var(--ink);
+}
