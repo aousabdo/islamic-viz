@@ -1,0 +1,14 @@
+{
+  "title": "Fasting Hours Around the World",
+  "subtitle": "Daily fast length, from the tropics to the poles",
+  "tag": "astronomy",
+  "controls": { "city": "City" },
+  "explainer": [
+    { "type": "p", "text": "A daily fast begins at Fajr and ends at Maghrib. Because both are keyed to the sun, the length of the fast is entirely a function of latitude and day of year. The chart above shows hours of fasting across 365 days for your chosen city." },
+    { "type": "p", "text": "Equatorial cities barely move — Singapore's fast hovers near 13 hours year-round. Temperate cities swing 5–7 hours across the year. Near the polar circle, the chart breaks: above ~66° latitude in midsummer, sunset doesn't come before Fajr the next morning. This is why communities in Arctic cities follow customs like aligning with Makkah's timing or the nearest moderate-latitude city." },
+    { "type": "p", "text": "The chart uses an 18.5° Fajr angle (Umm al-Qura) and standard sunset for Maghrib. Other methods shift the curve by 15–30 minutes but preserve the shape." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Fajr uses a -18.5° sun altitude threshold; Maghrib uses the standard -0.833° sunset (including atmospheric refraction). DST is applied per regional rules. At latitudes where the sun does not dip far enough below the horizon for formal Fajr calculation, values are plotted as gaps." }
+  ]
+}
