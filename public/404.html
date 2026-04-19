@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Islamic Viz Hub</title>
+  <script>
+    // SPA redirect for GitHub Pages: store the full path in sessionStorage,
+    // then redirect to the root so index.html can restore it via history.replaceState.
+    var path = window.location.pathname + window.location.search + window.location.hash;
+    sessionStorage.setItem('spa-redirect', path);
+    window.location.replace('/');
+  </script>
+</head>
+<body></body>
+</html>
