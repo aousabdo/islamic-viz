@@ -1,7 +1,13 @@
 // src/components/ChartTooltip.tsx
+type TooltipPayloadEntry = {
+  name: string;
+  value: number;
+  color: string;
+};
+
 type ChartTooltipProps = {
   active?: boolean;
-  payload?: Array<{ name: string; value: number; color: string }>;
+  payload?: TooltipPayloadEntry[];
   label?: string | number;
   /** Optional — override how the label string is displayed */
   labelFormatter?: (label: string | number) => string;
