@@ -3,6 +3,7 @@ import FajrGlobe from '../viz/fajr-globe/FajrGlobe';
 import FastingHours from '../viz/fasting-hours/FastingHours';
 import HijriDrift from '../viz/hijri-drift/HijriDrift';
 import SunPathAsr from '../viz/sun-path-asr/SunPathAsr';
+import QiblaGC from '../viz/qibla-great-circle/QiblaGC';
 
 export type VizSlug = 'fajr-globe' | 'fasting-hours' | 'hijri-drift' | 'sun-path-asr' | 'qibla-great-circle';
 
@@ -18,7 +19,7 @@ export const VISUALIZATIONS: Record<VizSlug, VizConfig | null> = {
   'fasting-hours': { slug: 'fasting-hours', tag: 'astronomy', Chart: FastingHours },
   'hijri-drift': { slug: 'hijri-drift', tag: 'calendar', Chart: HijriDrift },
   'sun-path-asr': { slug: 'sun-path-asr', tag: 'fiqh', Chart: SunPathAsr },
-  'qibla-great-circle': null,
+  'qibla-great-circle': { slug: 'qibla-great-circle', tag: 'geometry', Chart: QiblaGC },
 };
 
 export const VIZ_ORDER: VizSlug[] = [

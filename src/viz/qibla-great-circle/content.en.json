@@ -1,0 +1,15 @@
+{
+  "title": "Qibla, the Straight Line",
+  "subtitle": "The shortest path to Makkah is rarely what a flat map suggests",
+  "tag": "geometry",
+  "controls": { "city": "City" },
+  "labels": { "bearing": "Bearing from city", "makkah": "Makkah" },
+  "explainer": [
+    { "type": "p", "text": "Stand in New York and point toward Makkah. Which way? A Mercator map tells you southeast; a globe tells you northeast. The globe is right. On a sphere, the shortest path between two points is a great circle — a slice of the plane that passes through both points and the center of the Earth. For most cities in the northern hemisphere, that slice bends north toward (or past) the pole." },
+    { "type": "p", "text": "The map above is a Natural Earth projection, chosen because it doesn't lie as badly as Mercator about polar routes. The teal arc is the true shortest path from the selected city to Makkah. For an American, that arc visibly curves through northern Greenland. This is the same reason airlines from New York to Dubai fly north through Iceland, not east across the Atlantic." },
+    { "type": "p", "text": "Modern mosques orient toward this great-circle bearing, not the Mercator 'go east' direction. The numeric bearing at the top is what your compass should read." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Bearing computed with the standard initial-bearing formula using atan2 on a spherical Earth. Great-circle path interpolated with 128 segments via spherical linear interpolation. Map uses the Natural Earth I projection (d3-geo's geoNaturalEarth1). Country outlines sourced from world-atlas at 1:110m resolution." }
+  ]
+}
