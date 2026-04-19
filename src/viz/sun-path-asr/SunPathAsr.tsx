@@ -143,7 +143,7 @@ export default function SunPathAsr() {
         <line
           x1={PADDING_X} y1={H - PADDING_Y}
           x2={W - PADDING_X} y2={H - PADDING_Y}
-          stroke="rgba(255,255,255,0.10)"
+          stroke="var(--rule)"
         />
 
         {/* Sun arc with gradient stroke + glow */}
