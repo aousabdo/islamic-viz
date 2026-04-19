@@ -2,6 +2,7 @@ import type { ComponentType } from 'react';
 import FajrGlobe from '../viz/fajr-globe/FajrGlobe';
 import FastingHours from '../viz/fasting-hours/FastingHours';
 import HijriDrift from '../viz/hijri-drift/HijriDrift';
+import SunPathAsr from '../viz/sun-path-asr/SunPathAsr';
 
 export type VizSlug = 'fajr-globe' | 'fasting-hours' | 'hijri-drift' | 'sun-path-asr' | 'qibla-great-circle';
 
@@ -16,7 +17,7 @@ export const VISUALIZATIONS: Record<VizSlug, VizConfig | null> = {
   'fajr-globe': { slug: 'fajr-globe', tag: 'astronomy', Chart: FajrGlobe },
   'fasting-hours': { slug: 'fasting-hours', tag: 'astronomy', Chart: FastingHours },
   'hijri-drift': { slug: 'hijri-drift', tag: 'calendar', Chart: HijriDrift },
-  'sun-path-asr': null,
+  'sun-path-asr': { slug: 'sun-path-asr', tag: 'fiqh', Chart: SunPathAsr },
   'qibla-great-circle': null,
 };
 

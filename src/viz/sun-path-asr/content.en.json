@@ -1,0 +1,15 @@
+{
+  "title": "Sun Path and the Two Asrs",
+  "subtitle": "Why Shafi'i and Hanafi Asr differ, in geometry",
+  "tag": "fiqh",
+  "controls": { "city": "City", "date": "Date" },
+  "labels": { "sunrise": "Sunrise", "noon": "Dhuhr", "sunset": "Maghrib", "shafii": "Asr (Shafi'i)", "hanafi": "Asr (Hanafi)" },
+  "explainer": [
+    { "type": "p", "text": "Asr has two answers. The majority position (Shafi'i, Maliki, Hanbali) fixes Asr at the time when the shadow of an object equals its own height, plus the shadow it had at noon. The Hanafi position doubles this: shadow equals twice the height, plus the noon shadow. The difference isn't a disagreement about astronomy — it's a disagreement about which threshold of afternoon the prayer window opens at." },
+    { "type": "p", "text": "The arc above traces the sun's altitude through the day for the city and date you pick. The two vertical markers are the Shafi'i Asr (teal) and Hanafi Asr (orange). The further the sun gets from zenith, the longer the shadow — so the Hanafi marker always falls later than the Shafi'i marker. On a summer day in Makkah the difference might be under an hour; on a winter day at high latitude, it can exceed two." },
+    { "type": "p", "text": "Neither position is making an error. They're computing different geometrical events. A prayer time is a ruling written in the language of the sky, and the sky is precise." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Sun altitude is computed each 6 minutes from solar declination and hour angle (see solar.ts). Asr time is the local clock hour at which arctan(1 / (factor + tan(|lat - dec|))) matches the sun's altitude, where factor = 1 for Shafi'i/Maliki/Hanbali and 2 for Hanafi. At high latitudes where the sun fails to reach the required depression, one or both markers may not render — expected behavior, not a bug." }
+  ]
+}
