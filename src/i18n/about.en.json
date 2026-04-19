@@ -1,0 +1,8 @@
+{
+  "title": "About",
+  "paragraphs": [
+    "Islamic Viz Hub is a small collection of interactive visualizations exploring Islamic practice through geometry and astronomy. It's built for curious adults who like to understand how things work, and it's bilingual — every visualization ships in both Arabic and English with first-class typography, RTL layout, and parity content.",
+    "There are no accounts, no analytics beyond the hosting provider's, no advertising, and no tracking. The whole site is a static build deployed to GitHub Pages. Source code lives on GitHub — contributions welcome.",
+    "The visualizations take positions on neither theology nor calculation method. Where multiple conventions exist — different Fajr angles, different Asr thresholds — both are shown, sourced, and explained. Choose what your community follows."
+  ]
+}
