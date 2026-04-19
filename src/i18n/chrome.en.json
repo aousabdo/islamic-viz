@@ -1,0 +1,14 @@
+{
+  "site.title": "Islamic Viz Hub",
+  "site.tagline": "Interactive visualizations of Islamic science",
+  "nav.home": "All visualizations",
+  "nav.about": "About",
+  "viz.back": "← All visualizations",
+  "viz.share": "Copy link",
+  "viz.methodology": "Methodology",
+  "viz.bilingual": "EN ⇄ AR",
+  "lang.toggle": "العربية",
+  "notfound.title": "Page not found",
+  "notfound.body": "The page you were looking for isn't here.",
+  "notfound.home": "Go home"
+}
