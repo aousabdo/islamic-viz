@@ -1,9 +1,21 @@
-// src/App.tsx
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LangRoot from './pages/LangRoot';
+import LangRedirect from './pages/LangRedirect';
+import Home from './pages/Home';
+import About from './pages/About';
+import NotFound from './pages/NotFound';
+
 export default function App() {
   return (
-    <div className="p-8">
-      <h1 className="text-5xl text-ink mb-4">Islamic Viz Hub</h1>
-      <p className="text-ink-dim">Scaffold + Tailwind + tokens OK.</p>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<LangRedirect />} />
+        <Route path=":lang" element={<LangRoot />}>
+          <Route index element={<Home />} />
+          <Route path="about" element={<About />} />
+          <Route path="*" element={<NotFound />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
