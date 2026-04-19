@@ -15,16 +15,7 @@ export default function Header() {
       }}
     >
       <div className="max-w-4xl mx-auto px-6 h-14 flex items-center justify-between">
-        <Link
-          to={`/${lang}/`}
-          className="no-underline"
-          style={{
-            fontFamily: '"Instrument Serif", Georgia, serif',
-            color: 'var(--gold)',
-            fontSize: '1.05rem',
-            letterSpacing: '.04em',
-          }}
-        >
+        <Link to={`/${lang}/`} className="site-title">
           {t('site.title')}
         </Link>
 

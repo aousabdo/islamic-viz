@@ -26,6 +26,25 @@ html[dir='rtl'] body { text-align: right; }
 a { color: var(--accent); text-decoration: none; }
 a:hover { color: var(--accent-d); text-decoration: underline; }
 
+/* Site header */
+.site-title {
+  font-family: "Instrument Serif", Georgia, serif;
+  color: var(--gold);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+}
+
+/* Footer accent dot */
+.accent-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
 /* Force dark-theme colors on native form controls */
 select,
 input[type='date'],

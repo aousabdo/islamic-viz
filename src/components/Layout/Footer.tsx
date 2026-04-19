@@ -9,16 +9,7 @@ export default function Footer() {
         style={{ color: 'var(--ink-dim)' }}
       >
         <span className="flex items-center gap-2">
-          <span
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: '50%',
-              background: 'var(--accent)',
-              display: 'inline-block',
-              flexShrink: 0,
-            }}
-          />
+          <span className="accent-dot" />
           <Credit tier={2} />
         </span>
         <span>© 2026</span>
