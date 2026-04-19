@@ -56,7 +56,8 @@ export default function FajrGlobe() {
           <select
             value={cityIdx}
             onChange={(e) => setCityIdx(parseInt(e.target.value, 10))}
-            className="border border-rule rounded-lg px-2 py-1 bg-surface"
+            className="border rounded-lg px-2 py-1"
+            style={{ borderColor: 'var(--rule)', background: 'var(--surface)' }}
           >
             {CITIES.map((c, i) => (
               <option key={c.name} value={i}>{c.name}</option>
@@ -68,7 +69,8 @@ export default function FajrGlobe() {
           <select
             value={methodId}
             onChange={(e) => setMethodId(e.target.value)}
-            className="border border-rule rounded-lg px-2 py-1 bg-surface"
+            className="border rounded-lg px-2 py-1"
+            style={{ borderColor: 'var(--rule)', background: 'var(--surface)' }}
           >
             {CALC_METHODS.map((m) => (
               <option key={m.id} value={m.id}>
