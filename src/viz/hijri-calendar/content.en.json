@@ -1,0 +1,13 @@
+{
+  "title": "Hijri Calendar Bridge",
+  "subtitle": "Twelve lunar months mapped to Gregorian time — watch them drift across the year",
+  "tag": "calendar",
+  "controls": { "year": "Hijri year" },
+  "explainer": [
+    { "type": "p", "text": "The Islamic lunar calendar has 354 or 355 days, roughly 11 days shorter than the Gregorian year. This means every Islamic event — Ramadan, Hajj, the Islamic New Year — drifts backward through the Gregorian calendar by about 11 days per year. Use the slider to watch Ramadan move from one season to another as the years advance." },
+    { "type": "p", "text": "Every 33 years, the Hijri calendar completes roughly 34 cycles — bringing key events almost back to the same Gregorian date. This is the pattern behind the observation that 'Ramadan returns to your birthdate every 33 years.'" }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Hijri dates are computed using the Umm al-Qura calendar via the browser's Intl.DateTimeFormat with the 'islamic-umalqura' calendar extension. Each Hijri month's Gregorian start and end date is found by scanning candidate dates. Bar widths reflect actual month lengths (29 or 30 days)." }
+  ]
+}
