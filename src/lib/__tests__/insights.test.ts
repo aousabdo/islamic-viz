@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   WINTER_SOLSTICE_DAY, SUMMER_SOLSTICE_DAY,
+  SPRING_EQUINOX_DAY, AUTUMN_EQUINOX_DAY,
   RAMADAN_2025_START, RAMADAN_2025_END,
 } from '../constants';
 import { fajrInsight, fastingInsight, hijriInsight, sunPathInsight, qiblaInsight } from '../insights';
@@ -9,6 +10,8 @@ import { CITIES } from '../../data/cities';
 describe('constants', () => {
   it('WINTER_SOLSTICE_DAY is 355', () => expect(WINTER_SOLSTICE_DAY).toBe(355));
   it('SUMMER_SOLSTICE_DAY is 172', () => expect(SUMMER_SOLSTICE_DAY).toBe(172));
+  it('SPRING_EQUINOX_DAY is 80', () => expect(SPRING_EQUINOX_DAY).toBe(80));
+  it('AUTUMN_EQUINOX_DAY is 266', () => expect(AUTUMN_EQUINOX_DAY).toBe(266));
   it('RAMADAN_2025_START is 60', () => expect(RAMADAN_2025_START).toBe(60));
   it('RAMADAN_2025_END is 88', () => expect(RAMADAN_2025_END).toBe(88));
 });

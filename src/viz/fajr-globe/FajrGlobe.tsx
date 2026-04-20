@@ -53,6 +53,7 @@ export default function FajrGlobe() {
 
   const insight = fajrInsight(city, data, city2, data2, lang);
   const isWarning = insight.startsWith('⚠️');
+  const ramadanLabel = lang === 'ar' ? 'رمضان ٢٠٢٥' : "Ramadan '25";
 
   return (
     <div>
@@ -99,7 +100,7 @@ export default function FajrGlobe() {
             {/* Ramadan band */}
             <ReferenceArea x1={RAMADAN_2025_START} x2={RAMADAN_2025_END}
               fill="rgba(212,180,131,0.07)" stroke="none"
-              label={{ value: "Ramadan '25", fill: 'var(--gold)', fontSize: 9, position: 'insideTop' }} />
+              label={{ value: ramadanLabel, fill: 'var(--gold)', fontSize: 9, position: 'insideTop' }} />
 
             {/* Solstice lines */}
             <ReferenceLine x={WINTER_SOLSTICE_DAY} stroke="var(--gold)"

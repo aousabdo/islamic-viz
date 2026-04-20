@@ -4,13 +4,12 @@ import { geoNaturalEarth1, geoPath, geoGraticule10 } from 'd3-geo';
 import { feature } from 'topojson-client';
 import type { FeatureCollection, Geometry } from 'geojson';
 import { CITIES } from '../../data/cities';
-import { greatCirclePath, MAKKAH_COORDS, qiblaBearing } from '../../lib/qibla';
+import { greatCirclePath, MAKKAH_COORDS, qiblaBearing, haversineDistance } from '../../lib/qibla';
 import { useLang } from '../../i18n/useLang';
 import contentEn from './content.en.json';
 import contentAr from './content.ar.json';
 import StoryCallout from '../../components/StoryCallout';
 import { qiblaInsight } from '../../lib/insights';
-import { haversineDistance } from '../../lib/qibla';
 
 const W = 800, H = 420;
 

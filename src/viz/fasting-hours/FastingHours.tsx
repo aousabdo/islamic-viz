@@ -57,6 +57,8 @@ export default function FastingHours() {
 
   const insight = fastingInsight(city, data, city2, data2, lang);
   const isWarning = insight.startsWith('⚠️');
+  const ramadanLabel   = lang === 'ar' ? 'رمضان ٢٠٢٥' : "Ramadan '25";
+  const extremeLabel   = lang === 'ar' ? 'منطقة قصوى' : 'Extreme zone';
 
   return (
     <div>
@@ -92,11 +94,11 @@ export default function FastingHours() {
             {/* Ramadan band */}
             <ReferenceArea x1={RAMADAN_2025_START} x2={RAMADAN_2025_END}
               fill="rgba(212,180,131,0.07)" stroke="none"
-              label={{ value: "Ramadan '25", fill: 'var(--gold)', fontSize: 9, position: 'insideTop' }} />
+              label={{ value: ramadanLabel, fill: 'var(--gold)', fontSize: 9, position: 'insideTop' }} />
 
             {/* Polar extreme zone */}
             <ReferenceArea y1={20} y2={24} fill="rgba(239,68,68,0.06)" stroke="none"
-              label={{ value: 'Extreme zone', fill: '#ef4444', fontSize: 9, position: 'insideTopRight' }} />
+              label={{ value: extremeLabel, fill: '#ef4444', fontSize: 9, position: 'insideTopRight' }} />
 
             {/* Solstice lines */}
             <ReferenceLine x={WINTER_SOLSTICE_DAY} stroke="var(--gold)"    strokeDasharray="2 4" strokeOpacity={0.6}

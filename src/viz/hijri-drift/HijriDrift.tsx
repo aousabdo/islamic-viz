@@ -64,6 +64,7 @@ export default function HijriDrift() {
 
   // 33-year cycle: every 33 Gregorian years ≈ 34 Hijri years
   const cycleX = data.length > 0 ? data[0].gYear + 33 : 2060;
+  const cycleLabel = lang === 'ar' ? 'دورة ٣٣ عامًا' : '33-yr cycle';
 
   return (
     <div>
@@ -80,7 +81,7 @@ export default function HijriDrift() {
 
             {/* 33-year cycle annotation */}
             <ReferenceLine x={cycleX} stroke="var(--accent)" strokeDasharray="3 3" strokeOpacity={0.5}
-              label={{ value: '33-yr cycle', fill: 'var(--accent)', fontSize: 9, position: 'insideTopRight' }} />
+              label={{ value: cycleLabel, fill: 'var(--accent)', fontSize: 9, position: 'insideTopRight' }} />
 
             <CartesianGrid stroke="var(--rule)" strokeDasharray="2 4" />
             <XAxis type="number" dataKey="gYear" domain={['auto', 'auto']}
