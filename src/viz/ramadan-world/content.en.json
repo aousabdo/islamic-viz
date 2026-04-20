@@ -1,0 +1,13 @@
+{
+  "title": "Ramadan Across the World",
+  "subtitle": "When does Ramadan begin in each city, relative to Makkah?",
+  "tag": "calendar",
+  "controls": { "year": "Hijri year" },
+  "explainer": [
+    { "type": "p", "text": "When the crescent moon is sighted over Makkah and Ramadan begins, it is not the same local time everywhere. A Muslim in Samoa starts Ramadan nearly 14 hours after a Muslim in Makkah — by the time the first prayer of Ramadan begins in the Pacific, Muslims in Arabia may already have completed their first day of fasting." },
+    { "type": "p", "text": "This visualization shows each city's local midnight of Ramadan 1 — the moment their clock reads midnight on the first day of Ramadan. Colors indicate hours after Makkah's Ramadan begins. Hover over any city to see its exact Ramadan 1 date and suhoor/iftar times." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Ramadan 1 date is computed for each Hijri year using the Umm al-Qura calendar. Each city's Ramadan 1 local midnight = Ramadan 1 UTC + city.tz hours. Time offset from Makkah (UTC+3) = city.tz - 3 hours. Suhoor = Fajr on Ramadan 1; Iftar = Maghrib on Ramadan 1. Hover tooltip shows local times." }
+  ]
+}
