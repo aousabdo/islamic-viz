@@ -43,3 +43,14 @@ export function greatCirclePath(a: LatLng, b: LatLng, segments = 64): LatLng[] {
 }
 
 export const MAKKAH_COORDS: LatLng = MAKKAH;
+
+/** Haversine great-circle distance in kilometres between two lat/lng points. */
+export function haversineDistance(a: LatLng, b: LatLng): number {
+  const R = 6371;
+  const dLat = (b.lat - a.lat) * RAD;
+  const dLng = (b.lng - a.lng) * RAD;
+  const x =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(a.lat * RAD) * Math.cos(b.lat * RAD) * Math.sin(dLng / 2) ** 2;
+  return R * 2 * Math.atan2(Math.sqrt(x), Math.sqrt(1 - x));
+}

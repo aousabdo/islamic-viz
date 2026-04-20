@@ -110,3 +110,21 @@ export function hoursToHHMM(h: number): { hh: string; mm: string } {
   const mm = Math.round((norm - hh) * 60);
   return { hh: String(hh).padStart(2, '0'), mm: String(mm).padStart(2, '0') };
 }
+
+/**
+ * Sun azimuth in degrees from south (positive = west, negative = east) at a given local clock hour.
+ * Used by the Analemma visualization.
+ * Returns NaN if sun is below the horizon.
+ */
+export function sunAzimuth(loc: Location, d: Date, localHour: number): number {
+  const n   = dayOfYear(d);
+  const dec = solarDeclination(n) * RAD;
+  const phi = loc.lat * RAD;
+  const noon = solarNoon(loc, d);
+  const ha  = (localHour - noon) * 15 * RAD;
+  const sinAlt = Math.sin(dec) * Math.sin(phi) + Math.cos(dec) * Math.cos(phi) * Math.cos(ha);
+  const alt = Math.asin(Math.max(-1, Math.min(1, sinAlt)));
+  if (alt * DEG < -0.833) return NaN; // below horizon
+  const cosAz = (Math.sin(dec) - Math.sin(phi) * sinAlt) / (Math.cos(phi) * Math.cos(alt));
+  return Math.acos(Math.max(-1, Math.min(1, cosAz))) * DEG * (Math.sin(ha) > 0 ? 1 : -1);
+}

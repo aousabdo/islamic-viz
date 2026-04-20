@@ -26,6 +26,8 @@
   --chart-1:     #4adecc;
   --chart-2:     #d4b483;
   --chart-3:     #f97316;
+  --chart-4:     #8b7ec8;   /* twilight purple — Isha prayer */
+  --chart-5:     #e07040;   /* sunset orange  — Maghrib prayer */
 
   /* shadows / glows */
   --glow-teal:   0 0 24px rgba(77,222,204,0.15);
@@ -64,6 +66,8 @@
   --chart-1:     #0F766E;
   --chart-2:     #7C5F1E;
   --chart-3:     #c2410c;
+  --chart-4:     #5b4e9e;
+  --chart-5:     #c05020;
 
   --glow-teal:   0 2px 16px rgba(15,118,110,0.10);
   --glow-gold:   0 2px 12px rgba(124,95,30,0.08);
