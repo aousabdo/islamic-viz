@@ -159,23 +159,38 @@ export default function SunPathAsr() {
           />
         )}
 
-        {/* Asr markers */}
+        {/* Asr markers — vertical lines + top labels + bottom tick */}
         {asrMarkers.map((m, i) => {
           if (!isFinite(m.time)) return null;
           const x = xScale(m.time);
           return (
             <g key={i}>
+              {/* Full-height dashed line */}
               <line
                 x1={x} y1={PADDING_Y} x2={x} y2={H - PADDING_Y}
-                stroke={m.color}
-                strokeDasharray="3 4"
-                filter="url(#spa-glow)"
+                stroke={m.color} strokeWidth={1.5}
+                strokeDasharray="4 4"
+                opacity={0.75}
               />
+              {/* Top label (inside chart) */}
               <text
                 x={x + 4} y={PADDING_Y + 14 + m.dy}
                 fontSize={12} fill={m.color}
               >
                 {m.label} · {fmt(m.time)}
+              </text>
+              {/* Bottom tick mark */}
+              <line
+                x1={x} y1={H - PADDING_Y - 4}
+                x2={x} y2={H - PADDING_Y + 4}
+                stroke={m.color} strokeWidth={1.5}
+              />
+              {/* Bottom time label */}
+              <text
+                x={x} y={H - PADDING_Y + 18}
+                fontSize={9} fill={m.color} textAnchor="middle" opacity={0.85}
+              >
+                {fmt(m.time)}
               </text>
             </g>
           );

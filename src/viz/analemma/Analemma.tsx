@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CITIES } from '../../data/cities';
 import { sunAzimuth, sunAltitude } from '../../lib/solar';
-import { isDST } from '../../lib/dst';
 import { useLang } from '../../i18n/useLang';
 import { dayToMonth } from '../../lib/chartUtils';
 import GlowDefs from '../../components/GlowDefs';
@@ -39,8 +38,10 @@ export default function Analemma() {
     const out: Pt[] = [];
     for (let n = 1; n <= 365; n++) {
       const d = new Date(Date.UTC(2025, 0, n));
-      const dstOffset = isDST(city.dstType, d) ? 1 : 0;
-      const loc = { lat: city.lat, lng: city.lng, tz: city.tz + dstOffset };
+      // Use standard time (no DST) so the analemma samples the sun at the same
+      // clock time year-round. Applying DST causes a 1-hour jump at DST
+      // transitions that breaks the figure-8 continuity for DST cities.
+      const loc = { lat: city.lat, lng: city.lng, tz: city.tz };
       const az  = sunAzimuth(loc, d, 12.0);
       const alt = sunAltitude(loc, d, 12.0);
       if (isFinite(az) && isFinite(alt) && alt > 0) out.push({ day: n, az, alt });

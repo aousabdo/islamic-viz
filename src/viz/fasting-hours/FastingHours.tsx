@@ -55,6 +55,13 @@ export default function FastingHours() {
   const data  = useMemo(() => buildData(city),  [city]);
   const data2 = useMemo(() => city2 ? buildData(city2) : null, [city2]);
 
+  // Merge both datasets into one array so recharts uses a single data prop,
+  // avoiding per-series `data` which can cause domain/layout recalculation.
+  const mergedData = useMemo(
+    () => data.map((d, i) => ({ ...d, hours2: data2 ? data2[i]?.hours : undefined })),
+    [data, data2],
+  );
+
   const insight = fastingInsight(city, data, city2, data2, lang);
   const isWarning = insight.startsWith('⚠️');
   const ramadanLabel   = lang === 'ar' ? 'رمضان ٢٠٢٥' : "Ramadan '25";
@@ -86,7 +93,7 @@ export default function FastingHours() {
 
       <div style={{ width: '100%', height: 420 }}>
         <ResponsiveContainer>
-          <AreaChart data={data} margin={{ top: 16, right: 16, left: 0, bottom: 0 }}>
+          <AreaChart data={mergedData} margin={{ top: 16, right: 16, left: 0, bottom: 0 }}>
             {SEASON_BANDS.map((s) => (
               <ReferenceArea key={s.label} x1={s.x1} x2={s.x2} fill={s.fill} stroke="none" ifOverflow="hidden" />
             ))}
@@ -122,7 +129,7 @@ export default function FastingHours() {
               dot={false} activeDot={{ r: 4, fill: 'var(--chart-1)' }} />
 
             {data2 && (
-              <Area data={data2} type="monotone" dataKey="hours"
+              <Area type="monotone" dataKey="hours2"
                 name={`Fasting (${city2?.name.split(',')[0]})`}
                 stroke="var(--chart-2)" strokeWidth={1.5} strokeDasharray="4 2"
                 fill="none" dot={false} activeDot={{ r: 3, fill: 'var(--chart-2)' }} />
