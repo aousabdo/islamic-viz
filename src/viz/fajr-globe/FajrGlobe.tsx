@@ -49,6 +49,17 @@ export default function FajrGlobe() {
   const data  = useMemo(() => buildData(city),  [city, method]);
   const data2 = useMemo(() => city2 ? buildData(city2) : null, [city2, method]);
 
+  // Merge both datasets into one array so recharts uses a single data prop,
+  // avoiding per-series `data` which can cause x-domain/layout recalculation.
+  const mergedData = useMemo(
+    () => data.map((d, i) => ({
+      ...d,
+      fajr2:    data2 ? data2[i]?.fajr    : undefined,
+      sunrise2: data2 ? data2[i]?.sunrise : undefined,
+    })),
+    [data, data2],
+  );
+
   const fmtHour = (h: number) => { const { hh, mm } = hoursToHHMM(h); return `${hh}:${mm}`; };
 
   const insight = fajrInsight(city, data, city2, data2, lang);
@@ -96,7 +107,7 @@ export default function FajrGlobe() {
 
       <div style={{ width: '100%', height: 420 }}>
         <ResponsiveContainer>
-          <AreaChart data={data} margin={{ top: 16, right: 16, left: 0, bottom: 0 }}>
+          <AreaChart data={mergedData} margin={{ top: 16, right: 16, left: 0, bottom: 0 }}>
             {/* Ramadan band */}
             <ReferenceArea x1={RAMADAN_2025_START} x2={RAMADAN_2025_END}
               fill="rgba(212,180,131,0.07)" stroke="none"
@@ -132,10 +143,10 @@ export default function FajrGlobe() {
             {/* Compare city overlay */}
             {data2 && (
               <>
-                <Area data={data2} type="monotone" dataKey="fajr"    name={`Fajr (${city2?.name.split(',')[0]})`}
+                <Area type="monotone" dataKey="fajr2"    name={`Fajr (${city2?.name.split(',')[0]})`}
                   stroke="var(--chart-2)" strokeWidth={1} strokeDasharray="4 2"
                   fill="none" dot={false} activeDot={{ r: 3, fill: 'var(--chart-2)' }} />
-                <Area data={data2} type="monotone" dataKey="sunrise" name={`Sunrise (${city2?.name.split(',')[0]})`}
+                <Area type="monotone" dataKey="sunrise2" name={`Sunrise (${city2?.name.split(',')[0]})`}
                   stroke="var(--chart-3)" strokeWidth={1} strokeDasharray="4 2"
                   fill="none" dot={false} activeDot={{ r: 3, fill: 'var(--chart-3)' }} />
               </>
