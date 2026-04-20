@@ -29,10 +29,14 @@ export default function AsrShadow() {
   const city    = CITIES[cityIdx];
   const date    = new Date(dateIso + 'T00:00:00Z');
 
-  const { loc, sunrise, sunset, noonShadowPx, shafiiPx, hanafiPx, asrShafii, asrHanafi } = useMemo(() => {
+  const { loc, sunrise, sunset, shafiiPx, hanafiPx, asrShafii, asrHanafi, polarAnomaly } = useMemo(() => {
     const dstOffset = isDST(city.dstType, date) ? 1 : 0;
     const loc = { lat: city.lat, lng: city.lng, tz: city.tz + dstOffset };
     const { sunrise, sunset } = sunriseSunset(loc, date);
+    // Polar night / midnight sun guard
+    if (!isFinite(sunrise) || !isFinite(sunset)) {
+      return { loc, sunrise: 6, sunset: 18, shafiiPx: POLE_H * 4, hanafiPx: POLE_H * 5, asrShafii: NaN, asrHanafi: NaN, polarAnomaly: true };
+    }
     const noon = solarNoon(loc, date);
     const noonAlt = sunAltitude(loc, date, noon);
     const noonShadowPx = noonAlt > 0 ? POLE_H / Math.tan(noonAlt * Math.PI / 180) : POLE_H * 3;
@@ -46,7 +50,7 @@ export default function AsrShadow() {
       if (isNaN(asrShafii) && shadow >= shafiiPx) asrShafii = h;
       if (isNaN(asrHanafi) && shadow >= hanafiPx) asrHanafi = h;
     }
-    return { loc, sunrise, sunset, noonShadowPx, shafiiPx, hanafiPx, asrShafii, asrHanafi };
+    return { loc, sunrise, sunset, shafiiPx, hanafiPx, asrShafii, asrHanafi, polarAnomaly: false };
   }, [city, dateIso]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
@@ -79,9 +83,6 @@ export default function AsrShadow() {
 
   const fmt = (h: number) => { const { hh, mm } = hoursToHHMM(h); return `${hh}:${mm}`; };
 
-  // suppress unused warning
-  void noonShadowPx;
-
   return (
     <div>
       <div className="flex flex-wrap gap-3 mb-4 text-sm">
@@ -108,6 +109,12 @@ export default function AsrShadow() {
           {playing ? '⏸ Pause' : '▶ Play'}
         </button>
       </div>
+
+      {polarAnomaly && (
+        <div style={{ padding: '12px 16px', background: 'rgba(249,115,22,0.08)', border: '1px solid rgba(249,115,22,0.3)', borderRadius: 8, color: 'var(--chart-3)', fontSize: 13, marginBottom: 12 }}>
+          {lang === 'ar' ? '⚠️ لا تشرق الشمس / لا تغرب في هذا التاريخ لهذه المدينة.' : '⚠️ No sunrise or sunset on this date for this city.'}
+        </div>
+      )}
 
       <div style={{ display: 'flex', gap: 16, flexWrap: 'wrap', alignItems: 'flex-start' }}>
         <svg viewBox={`0 0 ${W} ${H}`} style={{ flex: '1 1 400px', height: 'auto' }}>
@@ -189,11 +196,11 @@ export default function AsrShadow() {
           </div>
           <hr style={{ border: 'none', borderTop: '1px solid var(--rule)', margin: '8px 0' }} />
           <div>
-            <span style={{ color: 'var(--chart-1)' }}>Shafi'i:</span>{' '}
+            <span style={{ color: 'var(--chart-1)' }}>{lang === 'ar' ? 'الشافعي' : "Shafi'i"}:</span>{' '}
             <span>{isFinite(asrShafii) ? fmt(asrShafii) : '—'}</span>
           </div>
           <div>
-            <span style={{ color: 'var(--chart-2)' }}>Hanafi:</span>{' '}
+            <span style={{ color: 'var(--chart-2)' }}>{lang === 'ar' ? 'الحنفي' : 'Hanafi'}:</span>{' '}
             <span>{isFinite(asrHanafi) ? fmt(asrHanafi) : '—'}</span>
           </div>
         </div>

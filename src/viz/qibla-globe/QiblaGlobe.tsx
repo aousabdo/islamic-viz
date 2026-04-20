@@ -39,12 +39,16 @@ export default function QiblaGlobe() {
   const city = CITIES[cityIdx];
 
   useEffect(() => {
-    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json')
+    const controller = new AbortController();
+    fetch('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json', { signal: controller.signal })
       .then((r) => r.json())
       .then((world) => {
         setLand(feature(world, world.objects.countries) as unknown as FeatureCollection<Geometry>);
       })
-      .catch(() => {});
+      .catch((e: unknown) => {
+        if (e instanceof Error && e.name !== 'AbortError') console.warn('world-atlas fetch failed', e);
+      });
+    return () => controller.abort();
   }, []);
 
   useEffect(() => {
@@ -64,7 +68,10 @@ export default function QiblaGlobe() {
     }
     animRef.current = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(animRef.current);
-  }, [cityIdx]); // eslint-disable-line react-hooks/exhaustive-deps
+  // Intentional: capture `rotation` at animation-start only.
+  // Adding `rotation` to deps would restart the animation on every frame → infinite loop.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [cityIdx]);
 
   const projection = useMemo(
     () => geoOrthographic().scale(H / 2 - 20).translate([W / 2, H / 2]).rotate(rotation).clipAngle(90),

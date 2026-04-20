@@ -5,8 +5,6 @@ import { sunriseSunset, fajrTime } from '../../lib/solar';
 import { isDST } from '../../lib/dst';
 import { useLang } from '../../i18n/useLang';
 import { MONTH_LABELS } from '../../lib/chartUtils';
-import contentEn from './content.en.json';
-import contentAr from './content.ar.json';
 
 const HEATMAP_CITY_NAMES = [
   'Helsinki, Finland',
@@ -68,8 +66,6 @@ const HEADER_H = 28;
 
 export default function FastingHeatmap() {
   const { lang } = useLang();
-  const dict = lang === 'ar' ? contentAr : contentEn;
-  void dict;
 
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
 
@@ -88,6 +84,9 @@ export default function FastingHeatmap() {
 
   const svgW = LABEL_W + 12 * CELL_W + 2;
   const svgH = HEADER_H + cities.length * CELL_H + 2;
+
+  const hoursLabel = lang === 'ar' ? 'ساعة' : 'hrs';
+  const polarLabel = lang === 'ar' ? 'شذوذ قطبي' : 'polar anomaly';
 
   return (
     <div>
@@ -122,8 +121,8 @@ export default function FastingHeatmap() {
                       style={{ cursor: 'pointer' }}
                       onMouseEnter={(e) => {
                         const text = isFinite(h)
-                          ? `${city.name.split(',')[0]} · ${MONTH_LABELS[m]}: ${h.toFixed(1)} hrs`
-                          : `${city.name.split(',')[0]} · ${MONTH_LABELS[m]}: polar anomaly`;
+                          ? `${city.name.split(',')[0]} · ${MONTH_LABELS[m]}: ${h.toFixed(1)} ${hoursLabel}`
+                          : `${city.name.split(',')[0]} · ${MONTH_LABELS[m]}: ${polarLabel}`;
                         setTooltip({ x: e.clientX, y: e.clientY, text });
                       }}
                       onMouseLeave={() => setTooltip(null)}
