@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CITIES } from '../../data/cities';
-import { solarDeclination, equationOfTime } from '../../lib/solar';
+import { solarDeclination, solarNoon } from '../../lib/solar';
 import { useLang } from '../../i18n/useLang';
 import { dayToMonth } from '../../lib/chartUtils';
 import GlowDefs from '../../components/GlowDefs';
@@ -36,25 +36,33 @@ export default function Analemma() {
 
   const pts = useMemo<Pt[]>(() => {
     const out: Pt[] = [];
+    const phi = city.lat * Math.PI / 180;
     for (let n = 1; n <= 365; n++) {
-      const dec = solarDeclination(n);
-      const eot = equationOfTime(n);
+      const d = new Date(Date.UTC(2025, 0, n));
+      // Standard time year-round — DST injects a 1-hour discontinuity in H that breaks the curve.
+      const loc = { lat: city.lat, lng: city.lng, tz: city.tz };
 
-      // Y-axis: sun's meridian-transit altitude, extended across the zenith into the northern
-      // half of the sky.  The transit altitude is 90° − |lat − dec|; composed with the
-      // south/north extension (isNorth → 180° − alt) this collapses to one linear expression.
-      //   0°  = south horizon  •  90° = zenith  •  180° = north horizon
-      // Sampling at meridian transit (H = 0) — rather than at clock noon — is what makes the
-      // curve smooth across tropical zenith crossings: at clock noon the sun is offset from
-      // the meridian, so altRaw is far below 90° on zenith-crossing days and flipping the
-      // isNorth sign produces a ~16° jump in y.
-      const alt = 90 + dec - city.lat;
-      if (alt <= 0 || alt >= 180) continue;     // polar night / sun never above horizon
+      const delta = solarDeclination(n) * Math.PI / 180;
+      // Hour angle at local clock noon (H < 0 = sun east of meridian, H > 0 = west).  Encodes
+      // BOTH equation-of-time AND the city's longitude offset from its time-zone meridian,
+      // which is why the figure-8's horizontal position depends on the city.
+      const H = (12 - solarNoon(loc, d)) * 15 * Math.PI / 180;
 
-      // X-axis: east-west angular deviation of the sun from the meridian at mean solar noon.
-      // EoT in minutes → degrees of hour angle: divide by 4.  Multiply by cos(dec) to project
-      // onto the celestial equator plane (the true angular E-W distance on the sky).
-      const az = (eot / 4) * Math.cos(dec * Math.PI / 180);
+      // Sun's unit vector in the local horizontal frame (south+, east+, up+).
+      const S = Math.cos(delta) * Math.sin(phi) * Math.cos(H) - Math.sin(delta) * Math.cos(phi);
+      const E = -Math.cos(delta) * Math.sin(H);
+      const U = Math.sin(delta) * Math.sin(phi) + Math.cos(delta) * Math.cos(phi) * Math.cos(H);
+      if (U <= 0) continue;                          // sun below horizon (polar night)
+
+      // Y-axis: angle of the sun in the (south, up) meridian plane, swept through the zenith.
+      //   0° = south horizon  •  90° = zenith  •  180° = north horizon.
+      // atan2 stays smooth through zenith crossings (no isNorth flip required).
+      const alt = Math.atan2(U, S) * 180 / Math.PI;
+
+      // X-axis: great-circle angular distance from the meridian plane (positive = west).
+      // This is the proper "east-west deviation on the sky" and stays bounded even when the
+      // sun passes near the zenith, where raw azimuth would swing wildly.
+      const az = -Math.asin(Math.max(-1, Math.min(1, E))) * 180 / Math.PI;
 
       out.push({ day: n, az, alt });
     }
@@ -131,7 +139,7 @@ export default function Analemma() {
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', maxWidth: W, height: 'auto', display: 'block', margin: '0 auto' }}>
         {/* Axis labels */}
         <text x={W / 2} y={H - 4} textAnchor="middle" fontSize={10} fill="var(--ink-dim)">
-          {lang === 'ar' ? 'معادلة الوقت (°)  شرق ← → غرب' : 'Equation of time — East ← → West (°)'}
+          {lang === 'ar' ? 'الانحراف عن الزوال (°)  شرق ← → غرب' : 'Meridian deviation — East ← → West (°)'}
         </text>
         <text x={8} y={H / 2} textAnchor="middle" fontSize={10} fill="var(--ink-dim)"
           transform={`rotate(-90, 8, ${H / 2})`}>
