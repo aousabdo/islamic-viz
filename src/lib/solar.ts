@@ -115,6 +115,10 @@ export function hoursToHHMM(h: number): { hh: string; mm: string } {
  * Sun azimuth in degrees from south (positive = west, negative = east) at a given local clock hour.
  * Used by the Analemma visualization.
  * Returns NaN if sun is below the horizon.
+ *
+ * Implementation note: the spherical formula produces cosAz where cosAz = +1 corresponds to due
+ * north and cosAz = -1 corresponds to due south. We negate before acos so that 0° = south,
+ * ±180° = north, matching the "from south" convention. The ha sign keeps west positive, east negative.
  */
 export function sunAzimuth(loc: Location, d: Date, localHour: number): number {
   const n   = dayOfYear(d);
@@ -126,5 +130,6 @@ export function sunAzimuth(loc: Location, d: Date, localHour: number): number {
   const alt = Math.asin(Math.max(-1, Math.min(1, sinAlt)));
   if (alt * DEG < -0.833) return NaN; // below horizon
   const cosAz = (Math.sin(dec) - Math.sin(phi) * sinAlt) / (Math.cos(phi) * Math.cos(alt));
-  return Math.acos(Math.max(-1, Math.min(1, cosAz))) * DEG * (Math.sin(ha) > 0 ? 1 : -1);
+  // Negate cosAz: formula gives 0°=north convention; negating converts to 0°=south convention.
+  return Math.acos(Math.max(-1, Math.min(1, -cosAz))) * DEG * (Math.sin(ha) > 0 ? 1 : -1);
 }
