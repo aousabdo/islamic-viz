@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
   WINTER_SOLSTICE_DAY, SUMMER_SOLSTICE_DAY,
-  SPRING_EQUINOX_DAY, AUTUMN_EQUINOX_DAY,
   RAMADAN_2025_START, RAMADAN_2025_END,
 } from '../constants';
 import { fajrInsight, fastingInsight, hijriInsight, sunPathInsight, qiblaInsight } from '../insights';

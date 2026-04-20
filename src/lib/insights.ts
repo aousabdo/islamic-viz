@@ -1,10 +1,11 @@
 // src/lib/insights.ts
 import type { City } from '../data/cities';
 import { dayToMonth } from './chartUtils';
-import { haversineDistance } from './qibla';
+import { haversineDistance, MAKKAH_COORDS } from './qibla';
 import { gregorianToHijri, ramadanStart } from './hijri';
+import type { Lang } from './format';
 
-export type Lang = 'en' | 'ar';
+export type { Lang } from './format';
 
 export type FajrPoint    = { day: number; fajr: number; sunrise: number };
 export type FastingPoint = { day: number; hours: number };
@@ -49,6 +50,7 @@ export function fajrInsight(
 
   if (city2 && data2) {
     const valid2 = data2.filter((p) => isFinite(p.fajr) && isFinite(p.sunrise));
+    if (valid2.length === 0) return lang === 'ar' ? 'لا توجد بيانات للمدينة المقارنة.' : 'No data for compare city.';
     const maxG2 = valid2.reduce(
       (a, b) => (b.sunrise - b.fajr > a.sunrise - a.fajr ? b : a),
       valid2[0],
@@ -87,6 +89,7 @@ export function fastingInsight(
 
   if (city2 && data2) {
     const valid2  = data2.filter((p) => isFinite(p.hours) && p.hours > 0);
+    if (valid2.length === 0) return lang === 'ar' ? 'لا توجد بيانات للمدينة المقارنة.' : 'No data for compare city.';
     const maxP2   = valid2.reduce((a, b) => (b.hours > a.hours ? b : a), valid2[0]);
     const diff    = maxP.hours - maxP2.hours;
     const cn2     = cityName(city2, lang);
@@ -150,7 +153,7 @@ export function sunPathInsight(
 
 export function qiblaInsight(city: City, bearing: number, lang: Lang): string {
   const cn  = cityName(city, lang);
-  const km  = Math.round(haversineDistance({ lat: city.lat, lng: city.lng }, { lat: 21.4225, lng: 39.8262 }));
+  const km  = Math.round(haversineDistance({ lat: city.lat, lng: city.lng }, MAKKAH_COORDS));
   const mi  = Math.round(km * 0.621371);
 
   const dirs = ['N','NNE','NE','ENE','E','ESE','SE','SSE','S','SSW','SW','WSW','W','WNW','NW','NNW'];
