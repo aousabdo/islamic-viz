@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CITIES } from '../../data/cities';
-import { sunAzimuth, sunAltitude, solarDeclination } from '../../lib/solar';
+import { sunAltitude, solarDeclination, equationOfTime } from '../../lib/solar';
 import { useLang } from '../../i18n/useLang';
 import { dayToMonth } from '../../lib/chartUtils';
 import GlowDefs from '../../components/GlowDefs';
@@ -49,18 +49,18 @@ export default function Analemma() {
       // Extended altitude: map the 0–90° range for the northern sky onto 90°–180° so both
       // hemispheres and tropical zenith-crossers render on a single continuous y-axis.
       //   0° = south horizon  •  90° = zenith  •  180° = north horizon
-      const dec    = solarDeclination(n);
+      const dec     = solarDeclination(n);
       const isNorth = dec > city.lat;            // sun transits north of zenith
-      const alt    = isNorth ? 180 - altRaw : altRaw;
+      const alt     = isNorth ? 180 - altRaw : altRaw;
 
-      // Meridian deviation: angular distance east/west of the local meridian.
-      // sunAzimuth returns 0°=south, ±180°=north (after the cosAz-negation fix).
-      // When the sun is in the northern sky (|az|>90) we fold it back so that
-      // "5° west of north" maps to the same +5° as "5° west of south".
-      const azRaw = sunAzimuth(loc, d, 12.0);
-      const az    = Math.abs(azRaw) <= 90
-        ? azRaw
-        : Math.sign(azRaw || 1) * (180 - Math.abs(azRaw));
+      // X-axis: equation of time projected onto the sky east-west.
+      // EoT in minutes → degrees: divide by 4.  Multiply by cos(dec) to project onto
+      // the celestial equator plane, giving the true east-west angular deviation of the
+      // sun from mean solar time.  This is independent of longitude, so the figure-8
+      // is always centered and free of the near-zenith cos(alt) singularity that plagued
+      // the azimuth-based approach.
+      const eotDeg = equationOfTime(n) / 4;          // minutes → degrees
+      const az     = eotDeg * Math.cos(dec * Math.PI / 180);
 
       out.push({ day: n, az, alt });
     }
@@ -137,14 +137,14 @@ export default function Analemma() {
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', maxWidth: W, height: 'auto', display: 'block', margin: '0 auto' }}>
         {/* Axis labels */}
         <text x={W / 2} y={H - 4} textAnchor="middle" fontSize={10} fill="var(--ink-dim)">
-          {lang === 'ar' ? 'انحراف عن نصف النهار — شرق ← → غرب (°)' : 'Meridian deviation — East ← → West (°)'}
+          {lang === 'ar' ? 'معادلة الوقت (°)  شرق ← → غرب' : 'Equation of time — East ← → West (°)'}
         </text>
         <text x={8} y={H / 2} textAnchor="middle" fontSize={10} fill="var(--ink-dim)"
           transform={`rotate(-90, 8, ${H / 2})`}>
           {lang === 'ar' ? 'الارتفاع (°)' : 'Altitude (°)'}
         </text>
 
-        {/* Meridian (x = 0): sun exactly on the N-S meridian */}
+        {/* EoT = 0 line: clock noon matches solar noon exactly */}
         {(() => {
           const x0 = xScale(0);
           return <line x1={x0} y1={PAD} x2={x0} y2={H - PAD} stroke="var(--rule)" strokeWidth={1} strokeDasharray="3 3" />;
