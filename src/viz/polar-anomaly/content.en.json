@@ -1,0 +1,13 @@
+{
+  "title": "Polar Fasting Anomaly",
+  "subtitle": "Peak Ramadan fasting burden across 97 cities — where does 20+ hours happen?",
+  "tag": "astronomy",
+  "controls": {},
+  "explainer": [
+    { "type": "p", "text": "Not all Ramadans are equal. While a Muslim in Singapore fasts ~13 hours regardless of when Ramadan falls, a Muslim in Helsinki may face over 20 hours of fasting when Ramadan coincides with summer. This map shows peak fasting hours during Ramadan 1447 AH (estimated Feb–Mar 2026) for all 97 cities in our dataset." },
+    { "type": "p", "text": "Red cities face extreme fasting. Teal cities have comfortable fasts under 14 hours. Click any city to see its peak fasting window and the scholarly context. Northern cities in winter Ramadans are actually relatively comfortable — the extreme cases arise when Ramadan falls in northern summer." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Peak fasting hours = max(Maghrib - Fajr) across all days of Ramadan 1447 AH. Fajr angle 18.5° (Umm al-Qura). Severity: < 14h = comfortable, 14-17h = moderate, 17-20h = severe, > 20h = extreme. Cities where Fajr is undefined (polar twilight) are also marked extreme." }
+  ]
+}
