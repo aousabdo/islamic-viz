@@ -1,0 +1,13 @@
+{
+  "title": "The Full Muslim Day",
+  "subtitle": "All five daily prayers traced across every day of the year",
+  "tag": "astronomy",
+  "controls": { "city": "City", "method": "Calculation method" },
+  "explainer": [
+    { "type": "p", "text": "Five prayers, five different astronomical thresholds, traced across every day of 2025. Fajr (predawn teal) opens the day before sunrise; Dhuhr (gold) falls at solar noon; Asr (orange) is ruled by shadow length; Maghrib (sunset orange) comes moments after sunset; Isha (twilight purple) closes after the last light fades. The chart shows how the entire Islamic day breathes and compresses across seasons and latitudes." },
+    { "type": "p", "text": "Notice how the gap between Fajr and sunrise widens dramatically in winter for northern cities, while tropical cities maintain nearly constant prayer schedules. The Dhuhr line traces the equation of time — it shifts by up to 16 minutes across the year, which is why solar noon rarely falls at exactly 12:00." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Fajr uses the selected method's twilight angle. Dhuhr is solar noon (equation of time + longitude correction). Asr is Shafi'i (shadow = object length + noon shadow). Maghrib is sunset (sun at -0.833°). Isha uses the method's angle or fixed interval. DST is applied per region." }
+  ]
+}

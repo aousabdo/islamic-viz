@@ -1,0 +1,13 @@
+{
+  "title": "Global Fasting Hours",
+  "subtitle": "How many hours each city fasts across every month — the latitude effect made visible",
+  "tag": "astronomy",
+  "controls": {},
+  "explainer": [
+    { "type": "p", "text": "Each cell shows the average fasting hours (Fajr to Maghrib) for that city in that month, computed on the 15th using the Umm al-Qura 18.5° Fajr angle. The pattern is stark: equatorial cities (Singapore, Lagos, Nairobi) run flat at ~13 hours year-round. Northern cities (Helsinki, Oslo) swing from 8 hours in winter to over 20 in summer — red cells mark the extreme zone where traditional fasting becomes medically and jurisprudentially contentious." },
+    { "type": "p", "text": "The mirror effect is visible in the Southern Hemisphere: when Helsinki's summer peaks, Buenos Aires and Sydney are in their short-fasting winter. The global Islamic community never shares the same fasting burden simultaneously." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Fasting hours = Maghrib (sunset) minus Fajr (18.5° angle, Umm al-Qura). Computed on the 15th of each month for calendar year 2025. DST is applied per city's region rules. Cities sorted by descending latitude." }
+  ]
+}

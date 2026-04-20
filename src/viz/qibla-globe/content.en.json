@@ -1,0 +1,13 @@
+{
+  "title": "Qibla Globe 3D",
+  "subtitle": "Drag to rotate — the great-circle path to Makkah from anywhere on Earth",
+  "tag": "geometry",
+  "controls": { "city": "City" },
+  "explainer": [
+    { "type": "p", "text": "Every Muslim on Earth prays facing Makkah. The red arc shows the great-circle route — the shortest path over the sphere's surface. Drag the globe to see how the arc curves: from New York it bends north over the Atlantic, from Jakarta it sweeps west over the Indian Ocean. A flat map makes these routes look strange; the globe reveals they are perfectly straight." },
+    { "type": "p", "text": "The concept of qibla (direction of prayer) required medieval Muslim scholars to develop spherical trigonometry centuries before it appeared in Europe. The formulas in this visualization descend directly from Ibn Battuta's era." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "The globe uses a d3-geo orthographic projection. The great-circle arc is computed via the Aviation Formulary haversine method with 128 interpolation steps. Drag events update the rotation state [λ, φ, γ] directly. City-change animation linearly interpolates to the target rotation over 600ms using requestAnimationFrame." }
+  ]
+}

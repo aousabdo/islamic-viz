@@ -1,0 +1,13 @@
+{
+  "title": "Asr Shadow Geometry",
+  "subtitle": "Watch the shadow grow until it triggers the afternoon prayer — Shafi'i vs Hanafi",
+  "tag": "fiqh",
+  "controls": { "city": "City", "date": "Date" },
+  "explainer": [
+    { "type": "p", "text": "Asr prayer time is defined geometrically, not by a sun angle. The Shafi'i, Maliki, and Hanbali schools define Asr as the moment a vertical pole's shadow equals the pole's own height plus its noon shadow. The Hanafi school uses twice the pole's height plus the noon shadow. Press play to watch the shadow grow from sunrise to sunset and see exactly when each threshold is crossed." },
+    { "type": "p", "text": "This is why the Hanafi Asr is always later than the Shafi'i Asr — sometimes by minutes, sometimes by hours. The difference is most dramatic at high latitudes in winter, when the sun barely climbs above the horizon and noon shadows are very long." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Sun altitude is computed using solar declination and hour angle. The pole is normalized to 180px. Shadow length in pixels = 180 / tan(altitude_radians). Shafi'i threshold = pole height + noon shadow. Hanafi threshold = 2 × pole height + noon shadow. Animation runs at ~24 simulated hours per 12 real seconds (2 hours/second)." }
+  ]
+}
