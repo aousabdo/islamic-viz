@@ -8,6 +8,14 @@ const P: Record<VizSlug, string> = {
   'hijri-drift':         'hd',
   'sun-path-asr':        'sp',
   'qibla-great-circle':  'qg',
+  'prayer-day':          'pd',
+  'qibla-globe':         'qgl',
+  'fasting-heatmap':     'fhm',
+  'asr-shadow':          'as',
+  'hijri-calendar':      'hc',
+  'polar-anomaly':       'pa',
+  'analemma':            'an',
+  'ramadan-world':       'rw',
 };
 
 export default function MiniChart({ slug }: { slug: VizSlug }) {
