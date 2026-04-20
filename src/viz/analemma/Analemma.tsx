@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CITIES } from '../../data/cities';
-import { sunAzimuth, sunAltitude } from '../../lib/solar';
+import { sunAltitude, solarNoon } from '../../lib/solar';
 import { useLang } from '../../i18n/useLang';
 import { dayToMonth } from '../../lib/chartUtils';
 import GlowDefs from '../../components/GlowDefs';
@@ -41,10 +41,15 @@ export default function Analemma() {
       // Use standard time (no DST) so the analemma samples the sun at the same
       // clock time year-round. Applying DST causes a 1-hour jump at DST
       // transitions that breaks the figure-8 continuity for DST cities.
-      const loc = { lat: city.lat, lng: city.lng, tz: city.tz };
-      const az  = sunAzimuth(loc, d, 12.0);
-      const alt = sunAltitude(loc, d, 12.0);
-      if (isFinite(az) && isFinite(alt) && alt > 0) out.push({ day: n, az, alt });
+      const loc  = { lat: city.lat, lng: city.lng, tz: city.tz };
+      // Use hour angle at clock noon as the x-axis. This equals (equation of time + longitude
+      // offset from tz meridian) × 15°/hr and traces a smooth, continuous figure-8 for every
+      // latitude — including tropical cities where the sun crosses the zenith (azimuth has a
+      // physical ±180° discontinuity at the zenith that splits the figure into disconnected blobs).
+      const noon = solarNoon(loc, d);
+      const az   = (12.0 - noon) * 15;  // positive = sun is west of meridian at clock noon
+      const alt  = sunAltitude(loc, d, 12.0);
+      if (isFinite(alt) && alt > 0) out.push({ day: n, az, alt });
     }
     return out;
   }, [city]);
@@ -119,14 +124,14 @@ export default function Analemma() {
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', maxWidth: W, height: 'auto', display: 'block', margin: '0 auto' }}>
         {/* Axis labels */}
         <text x={W / 2} y={H - 4} textAnchor="middle" fontSize={10} fill="var(--ink-dim)">
-          {lang === 'ar' ? 'السمت من الجنوب (°)' : 'Azimuth from south (°)'}
+          {lang === 'ar' ? 'معادلة الوقت — الشرق ← → الغرب (°)' : 'Equation of time — East ← → West (°)'}
         </text>
         <text x={8} y={H / 2} textAnchor="middle" fontSize={10} fill="var(--ink-dim)"
           transform={`rotate(-90, 8, ${H / 2})`}>
           {lang === 'ar' ? 'الارتفاع (°)' : 'Altitude (°)'}
         </text>
 
-        {/* Zero azimuth line */}
+        {/* ha = 0 line: clock noon coincides with solar noon (equation of time = 0) */}
         {(() => {
           const x0 = xScale(0);
           return <line x1={x0} y1={PAD} x2={x0} y2={H - PAD} stroke="var(--rule)" strokeWidth={1} strokeDasharray="3 3" />;
