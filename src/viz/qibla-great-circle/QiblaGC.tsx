@@ -8,6 +8,9 @@ import { greatCirclePath, MAKKAH_COORDS, qiblaBearing } from '../../lib/qibla';
 import { useLang } from '../../i18n/useLang';
 import contentEn from './content.en.json';
 import contentAr from './content.ar.json';
+import StoryCallout from '../../components/StoryCallout';
+import { qiblaInsight } from '../../lib/insights';
+import { haversineDistance } from '../../lib/qibla';
 
 const W = 800, H = 420;
 
@@ -53,6 +56,8 @@ export default function QiblaGC() {
   };
 
   const bearing = qiblaBearing({ lat: city.lat, lng: city.lng });
+  const distKm = Math.round(haversineDistance({ lat: city.lat, lng: city.lng }, MAKKAH_COORDS));
+  const distMi = Math.round(distKm * 0.621371);
 
   const cityXY = projection([city.lng, city.lat]);
   const makkahXY = projection([MAKKAH_COORDS.lng, MAKKAH_COORDS.lat]);
@@ -74,9 +79,10 @@ export default function QiblaGC() {
         </label>
         <div style={{ color: 'var(--ink-dim)' }}>
           {dict.labels.bearing}:{' '}
-          <span style={{ color: 'var(--accent)', fontWeight: 600 }}>
-            {bearing.toFixed(1)}°
-          </span>
+          <span style={{ color: 'var(--accent)', fontWeight: 600 }}>{bearing.toFixed(1)}°</span>
+          {'  ·  '}
+          <span style={{ color: 'var(--gold)' }}>{distKm.toLocaleString()} km</span>
+          <span style={{ color: 'var(--ink-dim)', fontSize: 11 }}> ({distMi.toLocaleString()} mi)</span>
         </div>
       </div>
 
@@ -163,6 +169,8 @@ export default function QiblaGC() {
           </>
         )}
       </svg>
+
+      <StoryCallout text={qiblaInsight(city, bearing, lang)} />
     </div>
   );
 }

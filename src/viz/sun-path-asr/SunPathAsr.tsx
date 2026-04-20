@@ -8,6 +8,8 @@ import { isDST } from '../../lib/dst';
 import { useLang } from '../../i18n/useLang';
 import contentEn from './content.en.json';
 import contentAr from './content.ar.json';
+import StoryCallout from '../../components/StoryCallout';
+import { sunPathInsight } from '../../lib/insights';
 
 const W = 720, H = 360;
 const PADDING_X = 40, PADDING_Y = 40;
@@ -205,7 +207,21 @@ export default function SunPathAsr() {
             </g>
           );
         })}
+
+        {/* Peak altitude at noon */}
+        {(() => {
+          const noonX = xScale(noon);
+          const peakAlt = Math.max(...points.map((p) => p.alt));
+          const noonY = yScale(peakAlt) - 10;
+          return (
+            <text x={noonX} y={noonY} textAnchor="middle" fontSize={10} fill="var(--gold)" opacity={0.85}>
+              {peakAlt.toFixed(1)}°
+            </text>
+          );
+        })()}
       </svg>
+
+      <StoryCallout text={sunPathInsight(city, asrShafii, asrHanafi, lang)} />
     </div>
   );
 }

@@ -2,7 +2,7 @@
 import { useMemo, useState } from 'react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer,
+  ReferenceArea, ReferenceLine, ResponsiveContainer,
 } from 'recharts';
 import { CITIES } from '../../data/cities';
 import { CALC_METHODS, getMethod } from '../../data/calc-methods';
@@ -10,8 +10,15 @@ import { sunriseSunset, fajrTime, hoursToHHMM } from '../../lib/solar';
 import { isDST } from '../../lib/dst';
 import { useLang } from '../../i18n/useLang';
 import { MONTH_TICKS, dayToMonth } from '../../lib/chartUtils';
+import {
+  WINTER_SOLSTICE_DAY, SUMMER_SOLSTICE_DAY,
+  SPRING_EQUINOX_DAY, AUTUMN_EQUINOX_DAY,
+  RAMADAN_2025_START, RAMADAN_2025_END,
+} from '../../lib/constants';
 import GlowDefs from '../../components/GlowDefs';
 import ChartTooltip from '../../components/ChartTooltip';
+import StoryCallout from '../../components/StoryCallout';
+import { fajrInsight } from '../../lib/insights';
 import contentEn from './content.en.json';
 import contentAr from './content.ar.json';
 
@@ -23,124 +30,120 @@ export default function FajrGlobe() {
     const i = CITIES.findIndex((c) => c.name.startsWith('Makkah'));
     return i >= 0 ? i : 0;
   });
-  const [methodId, setMethodId] = useState('umm');
+  const [methodId, setMethodId]   = useState('umm');
+  const [city2Idx, setCity2Idx]   = useState<number | null>(null);
 
-  const city = CITIES[cityIdx];
-  const method = getMethod(methodId);
+  const city    = CITIES[cityIdx];
+  const city2   = city2Idx !== null ? CITIES[city2Idx] : null;
+  const method  = getMethod(methodId);
 
-  const data = useMemo(() => {
-    const out: Array<{ day: number; fajr: number; sunrise: number }> = [];
-    for (let n = 1; n <= 365; n++) {
+  const buildData = (c: typeof city) =>
+    Array.from({ length: 365 }, (_, i) => {
+      const n = i + 1;
       const d = new Date(Date.UTC(2025, 0, n));
-      const dstOffset = isDST(city.dstType, d) ? 1 : 0;
-      const loc = { lat: city.lat, lng: city.lng, tz: city.tz + dstOffset };
-      const { sunrise } = sunriseSunset(loc, d);
-      const fajr = fajrTime(loc, d, method.fajrAngle);
-      out.push({ day: n, fajr, sunrise });
-    }
-    return out;
-  }, [city, method]);
+      const dstOffset = isDST(c.dstType, d) ? 1 : 0;
+      const loc = { lat: c.lat, lng: c.lng, tz: c.tz + dstOffset };
+      return { day: n, fajr: fajrTime(loc, d, method.fajrAngle), sunrise: sunriseSunset(loc, d).sunrise };
+    });
 
-  const cityLabel = lang === 'ar' && city.nameAr ? city.nameAr : city.name;
+  const data  = useMemo(() => buildData(city),  [city, method]);
+  const data2 = useMemo(() => city2 ? buildData(city2) : null, [city2, method]);
 
-  const fmtHour = (h: number) => {
-    const { hh, mm } = hoursToHHMM(h);
-    return `${hh}:${mm}`;
-  };
+  const fmtHour = (h: number) => { const { hh, mm } = hoursToHHMM(h); return `${hh}:${mm}`; };
+
+  const insight = fajrInsight(city, data, city2, data2, lang);
+  const isWarning = insight.startsWith('⚠️');
 
   return (
     <div>
+      {/* Controls */}
       <div className="flex flex-wrap gap-3 mb-4 text-sm">
         <label className="flex items-center gap-2">
           <span style={{ color: 'var(--ink-dim)' }}>{dict.controls.city}</span>
-          <select
-            value={cityIdx}
-            onChange={(e) => setCityIdx(parseInt(e.target.value, 10))}
+          <select value={cityIdx} onChange={(e) => setCityIdx(+e.target.value)}
             className="border rounded-lg px-2 py-1"
-            style={{ borderColor: 'var(--rule)', background: 'var(--surface)' }}
-          >
-            {CITIES.map((c, i) => (
-              <option key={c.name} value={i}>{c.name}</option>
-            ))}
+            style={{ borderColor: 'var(--rule)', background: 'var(--surface)' }}>
+            {CITIES.map((c, i) => <option key={c.name} value={i}>{c.name}</option>)}
           </select>
         </label>
         <label className="flex items-center gap-2">
           <span style={{ color: 'var(--ink-dim)' }}>{dict.controls.method}</span>
-          <select
-            value={methodId}
-            onChange={(e) => setMethodId(e.target.value)}
+          <select value={methodId} onChange={(e) => setMethodId(e.target.value)}
             className="border rounded-lg px-2 py-1"
-            style={{ borderColor: 'var(--rule)', background: 'var(--surface)' }}
-          >
+            style={{ borderColor: 'var(--rule)', background: 'var(--surface)' }}>
             {CALC_METHODS.map((m) => (
-              <option key={m.id} value={m.id}>
-                {lang === 'ar' ? m.labelAr : m.labelEn}
-              </option>
+              <option key={m.id} value={m.id}>{lang === 'ar' ? m.labelAr : m.labelEn}</option>
             ))}
+          </select>
+        </label>
+        <label className="flex items-center gap-2">
+          <span style={{ color: 'var(--ink-dim)' }}>
+            {lang === 'ar' ? 'مقارنة مع' : 'Compare'}
+          </span>
+          <select
+            value={city2Idx ?? ''}
+            onChange={(e) => setCity2Idx(e.target.value === '' ? null : +e.target.value)}
+            className="border rounded-lg px-2 py-1"
+            style={{ borderColor: 'var(--rule)', background: 'var(--surface)' }}>
+            <option value="">{lang === 'ar' ? 'لا شيء' : 'None'}</option>
+            {CITIES.map((c, i) => <option key={c.name} value={i}>{c.name}</option>)}
           </select>
         </label>
       </div>
 
-      <div className="text-sm mb-2" style={{ color: 'var(--ink-dim)' }}>
-        {cityLabel}
-      </div>
-
-      {/* Hidden SVG defs — must precede ResponsiveContainer in DOM */}
       <GlowDefs />
 
       <div style={{ width: '100%', height: 420 }}>
         <ResponsiveContainer>
           <AreaChart data={data} margin={{ top: 16, right: 16, left: 0, bottom: 0 }}>
+            {/* Ramadan band */}
+            <ReferenceArea x1={RAMADAN_2025_START} x2={RAMADAN_2025_END}
+              fill="rgba(212,180,131,0.07)" stroke="none"
+              label={{ value: "Ramadan '25", fill: 'var(--gold)', fontSize: 9, position: 'insideTop' }} />
+
+            {/* Solstice lines */}
+            <ReferenceLine x={WINTER_SOLSTICE_DAY} stroke="var(--gold)"
+              strokeDasharray="2 4" strokeOpacity={0.6}
+              label={{ value: '❄', position: 'insideTopLeft', fill: 'var(--gold)', fontSize: 11 }} />
+            <ReferenceLine x={SUMMER_SOLSTICE_DAY} stroke="var(--chart-3)"
+              strokeDasharray="2 4" strokeOpacity={0.6}
+              label={{ value: '☀', position: 'insideTopLeft', fill: 'var(--chart-3)', fontSize: 11 }} />
+
+            {/* Equinox lines */}
+            <ReferenceLine x={SPRING_EQUINOX_DAY}  stroke="var(--ink-dim)" strokeDasharray="1 5" strokeOpacity={0.35} />
+            <ReferenceLine x={AUTUMN_EQUINOX_DAY}  stroke="var(--ink-dim)" strokeDasharray="1 5" strokeOpacity={0.35} />
+
             <CartesianGrid stroke="var(--rule)" strokeDasharray="2 4" />
+            <XAxis dataKey="day" ticks={MONTH_TICKS} tickFormatter={dayToMonth}
+              stroke="var(--ink-dim)" tick={{ fill: 'var(--ink-dim)', fontSize: 11 }} />
+            <YAxis domain={[0, 8]} tickFormatter={fmtHour}
+              stroke="var(--ink-dim)" tick={{ fill: 'var(--ink-dim)', fontSize: 11 }} />
+            <Tooltip content={
+              <ChartTooltip labelFormatter={(d) => dayToMonth(Number(d))} valueFormatter={(v) => fmtHour(Number(v))} />
+            } />
 
-            <XAxis
-              dataKey="day"
-              ticks={MONTH_TICKS}
-              tickFormatter={dayToMonth}
-              stroke="var(--ink-dim)"
-              tick={{ fill: 'var(--ink-dim)', fontSize: 11 }}
-            />
-            <YAxis
-              domain={[0, 8]}
-              tickFormatter={fmtHour}
-              stroke="var(--ink-dim)"
-              tick={{ fill: 'var(--ink-dim)', fontSize: 11 }}
-            />
+            {/* Primary city */}
+            <Area type="monotone" dataKey="fajr"    name="Fajr"    stroke="var(--chart-1)" strokeWidth={2}
+              fill="url(#grad-chart1)" filter="url(#glow)" dot={false} activeDot={{ r: 4, fill: 'var(--chart-1)' }} />
+            <Area type="monotone" dataKey="sunrise" name="Sunrise" stroke="var(--chart-2)" strokeWidth={1.5}
+              fill="url(#grad-chart2)" filter="url(#glow)" dot={false} activeDot={{ r: 4, fill: 'var(--chart-2)' }} />
 
-            <Tooltip
-              content={
-                <ChartTooltip
-                  labelFormatter={(d) => dayToMonth(Number(d))}
-                  valueFormatter={(v) => fmtHour(Number(v))}
-                />
-              }
-            />
-
-            <Area
-              type="monotone"
-              dataKey="fajr"
-              name="Fajr"
-              stroke="var(--chart-1)"
-              strokeWidth={2}
-              fill="url(#grad-chart1)"
-              filter="url(#glow)"
-              dot={false}
-              activeDot={{ r: 4, fill: 'var(--chart-1)' }}
-            />
-            <Area
-              type="monotone"
-              dataKey="sunrise"
-              name="Sunrise"
-              stroke="var(--chart-2)"
-              strokeWidth={1.5}
-              fill="url(#grad-chart2)"
-              filter="url(#glow)"
-              dot={false}
-              activeDot={{ r: 4, fill: 'var(--chart-2)' }}
-            />
+            {/* Compare city overlay */}
+            {data2 && (
+              <>
+                <Area data={data2} type="monotone" dataKey="fajr"    name={`Fajr (${city2?.name.split(',')[0]})`}
+                  stroke="var(--chart-2)" strokeWidth={1} strokeDasharray="4 2"
+                  fill="none" dot={false} activeDot={{ r: 3, fill: 'var(--chart-2)' }} />
+                <Area data={data2} type="monotone" dataKey="sunrise" name={`Sunrise (${city2?.name.split(',')[0]})`}
+                  stroke="var(--chart-3)" strokeWidth={1} strokeDasharray="4 2"
+                  fill="none" dot={false} activeDot={{ r: 3, fill: 'var(--chart-3)' }} />
+              </>
+            )}
           </AreaChart>
         </ResponsiveContainer>
       </div>
+
+      <StoryCallout text={insight} warning={isWarning} />
     </div>
   );
 }
