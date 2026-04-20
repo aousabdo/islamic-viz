@@ -1,0 +1,13 @@
+{
+  "title": "Solar Analemma",
+  "subtitle": "The sun's position at noon every day of the year traces a figure-8 — the equation of time made visible",
+  "tag": "astronomy",
+  "controls": { "city": "City" },
+  "explainer": [
+    { "type": "p", "text": "If you photograph the sun at exactly 12:00 local time every day for a year, the dots trace a figure-8 called the analemma. The vertical spread is caused by Earth's axial tilt (changing declination throughout the year). The horizontal spread is caused by the elliptical orbit (equation of time). The crossing point — where the two lobes meet — is where solar noon falls exactly at 12:00." },
+    { "type": "p", "text": "This matters for Islamic prayer times because Dhuhr (solar noon) is defined astronomically, not by the clock. The analemma reveals how Dhuhr drifts up to 16 minutes away from 12:00 across the year, explaining why prayer time apps give different Dhuhr times on the same date in different years even in the same city." }
+  ],
+  "methodology": [
+    { "type": "p", "text": "Sun azimuth and altitude are computed at exactly 12:00 local clock time (not solar noon) for each of the 365 days of 2025. The azimuth is measured from south (positive = west, negative = east). Points are colored by season: winter teal, spring green, summer gold, autumn purple. Press Play to animate the sun's path through the year." }
+  ]
+}
