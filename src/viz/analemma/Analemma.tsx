@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { CITIES } from '../../data/cities';
-import { sunAltitude, solarDeclination, equationOfTime } from '../../lib/solar';
+import { solarDeclination, equationOfTime } from '../../lib/solar';
 import { useLang } from '../../i18n/useLang';
 import { dayToMonth } from '../../lib/chartUtils';
 import GlowDefs from '../../components/GlowDefs';
@@ -37,30 +37,24 @@ export default function Analemma() {
   const pts = useMemo<Pt[]>(() => {
     const out: Pt[] = [];
     for (let n = 1; n <= 365; n++) {
-      const d = new Date(Date.UTC(2025, 0, n));
-      // Use standard time (no DST) so the analemma samples the sun at the same
-      // clock time year-round. Applying DST causes a 1-hour jump at DST
-      // transitions that breaks the figure-8 continuity for DST cities.
-      const loc = { lat: city.lat, lng: city.lng, tz: city.tz };
+      const dec = solarDeclination(n);
+      const eot = equationOfTime(n);
 
-      const altRaw = sunAltitude(loc, d, 12.0);
-      if (!isFinite(altRaw) || altRaw <= 0) continue;
+      // Y-axis: sun's meridian-transit altitude, extended across the zenith into the northern
+      // half of the sky.  The transit altitude is 90° − |lat − dec|; composed with the
+      // south/north extension (isNorth → 180° − alt) this collapses to one linear expression.
+      //   0°  = south horizon  •  90° = zenith  •  180° = north horizon
+      // Sampling at meridian transit (H = 0) — rather than at clock noon — is what makes the
+      // curve smooth across tropical zenith crossings: at clock noon the sun is offset from
+      // the meridian, so altRaw is far below 90° on zenith-crossing days and flipping the
+      // isNorth sign produces a ~16° jump in y.
+      const alt = 90 + dec - city.lat;
+      if (alt <= 0 || alt >= 180) continue;     // polar night / sun never above horizon
 
-      // Extended altitude: map the 0–90° range for the northern sky onto 90°–180° so both
-      // hemispheres and tropical zenith-crossers render on a single continuous y-axis.
-      //   0° = south horizon  •  90° = zenith  •  180° = north horizon
-      const dec     = solarDeclination(n);
-      const isNorth = dec > city.lat;            // sun transits north of zenith
-      const alt     = isNorth ? 180 - altRaw : altRaw;
-
-      // X-axis: equation of time projected onto the sky east-west.
-      // EoT in minutes → degrees: divide by 4.  Multiply by cos(dec) to project onto
-      // the celestial equator plane, giving the true east-west angular deviation of the
-      // sun from mean solar time.  This is independent of longitude, so the figure-8
-      // is always centered and free of the near-zenith cos(alt) singularity that plagued
-      // the azimuth-based approach.
-      const eotDeg = equationOfTime(n) / 4;          // minutes → degrees
-      const az     = eotDeg * Math.cos(dec * Math.PI / 180);
+      // X-axis: east-west angular deviation of the sun from the meridian at mean solar noon.
+      // EoT in minutes → degrees of hour angle: divide by 4.  Multiply by cos(dec) to project
+      // onto the celestial equator plane (the true angular E-W distance on the sky).
+      const az = (eot / 4) * Math.cos(dec * Math.PI / 180);
 
       out.push({ day: n, az, alt });
     }
