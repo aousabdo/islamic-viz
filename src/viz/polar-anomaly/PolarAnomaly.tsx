@@ -7,8 +7,6 @@ import { sunriseSunset, fajrTime } from '../../lib/solar';
 import { isDST } from '../../lib/dst';
 import { ramadanStart } from '../../lib/hijri';
 import { useLang } from '../../i18n/useLang';
-import contentEn from './content.en.json';
-import contentAr from './content.ar.json';
 
 const W = 800, H = 420;
 
@@ -47,9 +45,6 @@ function computePeak(city: City): number {
 
 export default function PolarAnomaly() {
   const { lang } = useLang();
-  // dict imported but used for the component context (lang-aware text inline)
-  const _dict = lang === 'ar' ? contentAr : contentEn;
-  void _dict;
 
   const [land, setLand] = useState<FeatureCollection<Geometry> | null>(null);
   const [selected, setSelected] = useState<number | null>(null);
@@ -113,10 +108,15 @@ export default function PolarAnomaly() {
 
       {/* Legend */}
       <div style={{ position: 'absolute', bottom: 12, right: 12, display: 'flex', flexDirection: 'column', gap: 4 }}>
-        {(['comfortable','moderate','severe','extreme'] as Severity[]).map((s) => (
+        {([
+          { sev: 'comfortable' as Severity, label: lang === 'ar' ? '< 14 ساعة' : '< 14h' },
+          { sev: 'moderate'    as Severity, label: lang === 'ar' ? '14–17 ساعة' : '14–17h' },
+          { sev: 'severe'      as Severity, label: lang === 'ar' ? '17–20 ساعة' : '17–20h' },
+          { sev: 'extreme'     as Severity, label: lang === 'ar' ? '> 20 ساعة' : '> 20h' },
+        ]).map(({ sev: s, label }) => (
           <span key={s} style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--ink-dim)' }}>
             <span style={{ width: 10, height: 10, borderRadius: '50%', background: SEVERITY_COLOR[s], display: 'inline-block' }} />
-            {s === 'comfortable' ? '< 14h' : s === 'moderate' ? '14–17h' : s === 'severe' ? '17–20h' : '> 20h'}
+            {label}
           </span>
         ))}
       </div>

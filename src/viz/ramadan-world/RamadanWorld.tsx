@@ -108,6 +108,7 @@ export default function RamadanWorld() {
                 fill={color} filter="url(#rw-glow)" opacity={0.85}
                 style={{ cursor: 'pointer' }}
                 onMouseEnter={(e) => { setHovered(i); setTooltipPos({ x: e.clientX, y: e.clientY }); }}
+                onMouseMove={(e) => setTooltipPos({ x: e.clientX, y: e.clientY })}
                 onMouseLeave={() => setHovered(null)}
               />
             );
