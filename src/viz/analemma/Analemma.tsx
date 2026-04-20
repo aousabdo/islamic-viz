@@ -9,7 +9,7 @@ import contentAr from './content.ar.json';
 
 const W = 480;
 const H = 480;
-const PAD = 40;
+const PAD = 52;
 
 type Pt = { day: number; az: number; alt: number };
 
@@ -18,6 +18,20 @@ function ptColor(day: number): string {
   if (day <= 171) return '#7cc87a'; // spring
   if (day <= 265) return '#d4b483'; // summer
   return '#8b7ec8';                 // autumn/winter
+}
+
+// 1–2–5 sequence tick generator.
+function niceTicks(min: number, max: number, targetCount = 6): number[] {
+  const range = max - min;
+  if (!(range > 0)) return [];
+  const rawStep = range / targetCount;
+  const pow = Math.pow(10, Math.floor(Math.log10(rawStep)));
+  const n = rawStep / pow;
+  const step = (n < 1.5 ? 1 : n < 3 ? 2 : n < 7 ? 5 : 10) * pow;
+  const first = Math.ceil(min / step) * step;
+  const ticks: number[] = [];
+  for (let v = first; v <= max + step * 0.5; v += step) ticks.push(v);
+  return ticks;
 }
 
 export default function Analemma() {
@@ -92,15 +106,19 @@ export default function Analemma() {
 
   const allAz  = pts.map((p) => p.az);
   const allAlt = pts.map((p) => p.alt);
-  const azMin  = Math.min(...allAz)  - 2;
-  const azMax  = Math.max(...allAz)  + 2;
-  const altMin = Math.min(...allAlt) - 2;
-  const altMax = Math.max(...allAlt) + 2;
+  const azRange  = Math.max(...allAz)  - Math.min(...allAz);
+  const altRange = Math.max(...allAlt) - Math.min(...allAlt);
+  const azMin  = Math.min(...allAz)  - Math.max(2, azRange  * 0.08);
+  const azMax  = Math.max(...allAz)  + Math.max(2, azRange  * 0.08);
+  const altMin = Math.min(...allAlt) - Math.max(2, altRange * 0.08);
+  const altMax = Math.max(...allAlt) + Math.max(2, altRange * 0.08);
 
   const xScale = (az: number)  => PAD + ((az  - azMin)  / (azMax  - azMin))  * (W - 2 * PAD);
   const yScale = (alt: number) => H - PAD - ((alt - altMin) / (altMax - altMin)) * (H - 2 * PAD);
 
   const lastPt = visiblePts[visiblePts.length - 1];
+  const xTicks = niceTicks(azMin,  azMax,  6);
+  const yTicks = niceTicks(altMin, altMax, 6);
 
   return (
     <div>
@@ -137,12 +155,48 @@ export default function Analemma() {
       <GlowDefs />
 
       <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', maxWidth: W, height: 'auto', display: 'block', margin: '0 auto' }}>
+        {/* Plot frame */}
+        <line x1={PAD} y1={H - PAD} x2={W - PAD} y2={H - PAD} stroke="var(--ink-dim)" strokeWidth={0.6} opacity={0.45} />
+        <line x1={PAD} y1={PAD}     x2={PAD}     y2={H - PAD} stroke="var(--ink-dim)" strokeWidth={0.6} opacity={0.45} />
+
+        {/* X gridlines, tick marks + values */}
+        {xTicks.map((t) => {
+          const x = xScale(t);
+          return (
+            <g key={`xt-${t}`}>
+              <line x1={x} y1={PAD} x2={x} y2={H - PAD}
+                stroke="var(--rule)" strokeWidth={0.35} opacity={0.18} />
+              <line x1={x} y1={H - PAD} x2={x} y2={H - PAD + 4}
+                stroke="var(--ink-dim)" strokeWidth={0.8} opacity={0.7} />
+              <text x={x} y={H - PAD + 14} textAnchor="middle" fontSize={9} fill="var(--ink-dim)">
+                {t.toFixed(0)}°
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Y gridlines, tick marks + values */}
+        {yTicks.map((t) => {
+          const y = yScale(t);
+          return (
+            <g key={`yt-${t}`}>
+              <line x1={PAD} y1={y} x2={W - PAD} y2={y}
+                stroke="var(--rule)" strokeWidth={0.35} opacity={0.18} />
+              <line x1={PAD - 4} y1={y} x2={PAD} y2={y}
+                stroke="var(--ink-dim)" strokeWidth={0.8} opacity={0.7} />
+              <text x={PAD - 6} y={y + 3} textAnchor="end" fontSize={9} fill="var(--ink-dim)">
+                {t.toFixed(0)}°
+              </text>
+            </g>
+          );
+        })}
+
         {/* Axis labels */}
-        <text x={W / 2} y={H - 4} textAnchor="middle" fontSize={10} fill="var(--ink-dim)">
+        <text x={W / 2} y={H - 6} textAnchor="middle" fontSize={10} fill="var(--ink-dim)">
           {lang === 'ar' ? 'الانحراف عن الزوال (°)  شرق ← → غرب' : 'Meridian deviation — East ← → West (°)'}
         </text>
-        <text x={8} y={H / 2} textAnchor="middle" fontSize={10} fill="var(--ink-dim)"
-          transform={`rotate(-90, 8, ${H / 2})`}>
+        <text x={12} y={H / 2} textAnchor="middle" fontSize={10} fill="var(--ink-dim)"
+          transform={`rotate(-90, 12, ${H / 2})`}>
           {lang === 'ar' ? 'الارتفاع (°)' : 'Altitude (°)'}
         </text>
 
@@ -192,7 +246,7 @@ export default function Analemma() {
           { color: '#d4b483', label: lang === 'ar' ? 'صيف' : 'Summer' },
           { color: '#8b7ec8', label: lang === 'ar' ? 'خريف' : 'Autumn' },
         ].map(({ color, label }, i) => (
-          <g key={i} transform={`translate(${PAD + i * 110}, ${PAD - 18})`}>
+          <g key={i} transform={`translate(${PAD + i * 110}, ${PAD - 24})`}>
             <circle r={4} fill={color} />
             <text x={8} y={4} fontSize={9} fill="var(--ink-dim)">{label}</text>
           </g>
